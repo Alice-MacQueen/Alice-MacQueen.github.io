@@ -1,23 +1,37 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Alice-MacQueen.github.io",
-    "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
-  },
-  {
     "objectID": "about.html",
     "href": "about.html",
-    "title": "About me",
+    "title": "Portfolio",
     "section": "",
-    "text": "Say more about you here."
+    "text": "This data science project portfolio showcases my work in data analysis, visualization, and machine learning."
   },
   {
-    "objectID": "about.html#header",
-    "href": "about.html#header",
-    "title": "About me",
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "Resume",
     "section": "",
-    "text": "Say more about you here."
+    "text": "Download Resume"
+  },
+  {
+    "objectID": "resume.html#header",
+    "href": "resume.html#header",
+    "title": "Resume",
+    "section": "Header",
+    "text": "Header\nSay more about your Resume here."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Alice MacQueen",
+    "section": "",
+    "text": "Alice MacQueen is a computational biologist with a Ph.D. from the University of Chicago and a background in quantitative population genetics, who focuses on identifying molecular variation to solve problems that impact human well-being.\nSpecifically, Alice uses R to solve problems and generate insight in agricultural and immunological sequencing data using linear mixed models, Bayesian multivariate adaptive shrinkage, and statistical association methods."
+  },
+  {
+    "objectID": "index.html#data-science-project-portfolio",
+    "href": "index.html#data-science-project-portfolio",
+    "title": "Alice MacQueen",
+    "section": "",
+    "text": "Alice MacQueen is a computational biologist with a Ph.D. from the University of Chicago and a background in quantitative population genetics, who focuses on identifying molecular variation to solve problems that impact human well-being.\nSpecifically, Alice uses R to solve problems and generate insight in agricultural and immunological sequencing data using linear mixed models, Bayesian multivariate adaptive shrinkage, and statistical association methods."
   }
 ]

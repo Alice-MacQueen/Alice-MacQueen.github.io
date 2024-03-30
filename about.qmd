@@ -1,5 +1,12 @@
 ---
-title: "About"
+title: "Portfolio"
 ---
 
-About this site
+This data science project portfolio showcases my work in data analysis, visualization, and machine learning.
+
+```{r include=FALSE}
+# This data science project portfolio is composed of [number of projects] projects covering the full spectrum of the data science process.
+
+# This portfolio’s projects apply R tools within a data science context to provide value to agriculture and biotech businesses using [targeted tools, algorithms, and techniques].
+```
+

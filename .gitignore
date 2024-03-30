@@ -6,3 +6,6 @@ rmarkdown-website-template.Rproj
 README.html
 
 /.quarto/
+
+ahm.jpg
+.DS_Store

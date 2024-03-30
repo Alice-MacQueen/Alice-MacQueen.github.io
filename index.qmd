@@ -1,7 +1,24 @@
 ---
-title: "Alice-MacQueen.github.io"
+title: "Alice MacQueen"
+image: photo.jpg
+toc: false
+about: 
+  template: solana
+  image-shape: rectangle
+  image-width: 20em
+  links:
+    - text: Portfolio
+      href: https://alice-macqueen.github.io
+    - text: LinkedIn
+      href: www.linkedin.com/in/alice-macqueen-38a68461
+    - text: GitHub
+      href: https://github.com/alice-macqueen
+    - text: Email
+      href: mailto:alice.macqueen@gmail.com
 ---
 
-This is a Quarto website.
+## Data Science Project Portfolio
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Alice MacQueen is a computational biologist with a Ph.D. from the University of Chicago and a background in quantitative population genetics, who focuses on identifying molecular variation to solve problems that impact human well-being.
+
+Specifically, Alice uses R to solve problems and generate insight in agricultural and immunological sequencing data using linear mixed models, Bayesian multivariate adaptive shrinkage, and statistical association methods.
