@@ -1,5 +1,17 @@
 ---
 title: "Portfolio"
+listing:
+  contents: portfolio
+  sort: "date desc"
+  type: default
+  image-align: right
+  max-description-length: 175
+  date-format: medium
+  categories: true
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+title-block-banner: true
 ---
 
 This data science project portfolio showcases my work in data analysis, visualization, and machine learning.

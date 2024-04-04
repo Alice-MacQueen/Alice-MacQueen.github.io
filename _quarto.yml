@@ -3,12 +3,12 @@ project:
   output-dir: docs
 
 website:
-  title: "Alice-MacQueen.github.io"
+  title: "Alice MacQueen"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - portfolio.qmd
       - resume.qmd
 
 format:
@@ -16,6 +16,7 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
+    page-layout: full
 
 
 

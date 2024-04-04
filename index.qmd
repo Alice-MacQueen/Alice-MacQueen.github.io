@@ -10,7 +10,7 @@ about:
     - text: Portfolio
       href: https://alice-macqueen.github.io
     - text: LinkedIn
-      href: www.linkedin.com/in/alice-macqueen-38a68461
+      href: https://www.linkedin.com/in/alice-macqueen-38a68461/
     - text: GitHub
       href: https://github.com/alice-macqueen
     - text: Email

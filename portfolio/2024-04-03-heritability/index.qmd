@@ -1,0 +1,126 @@
+---
+title: "Calculating narrow-sense heritability"
+description: "Estimating the genetic component of yield using the rrBLUP package on common bean yield data from the CDBN"
+author:
+  - name: Alice MacQueen
+    url: https://alice-macqueen.github.io/
+    orcid: 0000-0002-4606-1832
+date: 2024-04-03
+categories: [rrBLUP, R] # self-defined categories
+citation: 
+  url: https://alice-macqueen.github.io/posts/2024-04-03-heritability/
+image: preview-image.png
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+bibliography: references.bib
+---
+
+Narrow-sense heritability, or h^2^, is a descriptive statistic calculated by geneticists and crop breeders prior to modeling the association between a trait (such as height or yield) and molecular variation present in a population (such as single nucleotide polymorphisms, or SNPs).
+
+It varies between 0 and 1 and is a measure of the fraction of the total variation in a trait attributable to additive effects of the molecular variation present in the group of individuals where the trait was measured. If it's zero, or as a rule of thumb, 0.2 or less, there is little additive genetic variation for that trait, and any modeling of the association between the trait and molecular variation is likely to be unsuccessful.
+
+Here I calculate h^2^ for biomass data in the switchgrass diversity panel dataset.
+
+To calculate h^2^, I need trait data for my group of interest (total biomass for genotypes in the switchgrass diversity panel data, at the Austin, Texas site, in 2019) and a kinship matrix. The kinship matrix here contains information about how the switchgrass individuals are genetically related to one another. I've pre-calculated the kinship matrix for these individuals using the Van Raden method [@vanraden2008].
+
+There are many factors that go in to making the kinship matrix, but I won't go into the details of that here.
+
+First, load the R packages I'll need to compute this statistic and load the kinship matrix.
+
+```{r}
+#| message: false
+#| 
+library(tidyverse)
+library(here)
+library(rrBLUP)
+library(switchgrassGWAS)
+
+k_full <- read_rds(here("data", "Kinship_van_Raden_630_individuals_SNPs_r2_20percent.rds"))
+```
+
+The kinship matrix is a matrix with column and row names that are individual plant IDs (`PLANT_ID` in the trait dataframe).
+
+```{r}
+str(k_full)
+
+k_full[1:5, 1:5]
+```
+
+Next, load the trait data. Here I am going to use the publicly available trait data from the [switchgrassGWAS R package](https://alice-macqueen.github.io/switchgrassGWAS/).
+
+```{r}
+trait_data <- switchgrassGWAS::pvdiv_phenotypes
+```
+
+To calculate narrow-sense heritability for one trait, `CLMB_BIOMASS`, I need to manipulate the trait dataframe so that the `PLANT_ID` included match the ones in the kinship matrix.
+
+```{r}
+one_trait <- trait_data |> 
+  filter(!is.na(CLMB_BIOMASS)) |>  # <1>
+  filter(PLANT_ID %in% colnames(k_full)) # <2>
+```
+
+1.  Filter individuals to those with data in the CLMB_BIOMASS column
+2.  Filter individuals to those with PLANT_ID that match the names in the kinship matrix.
+
+Then, I need to make sure that the same `PLANT_ID` are present in the kinship matrix and in the dataframe, in the same order. To do this, first I find the numerical values of the column names that are in the trait dataframe, then I subset the kinship matrix to just those values.
+
+```{r}
+k_in_phe <- which(colnames(k_full) %in% one_trait$PLANT_ID)
+k_one <- k_full[k_in_phe, k_in_phe]
+```
+
+Then, make sure that the PLANT_ID in the trait dataframe are in the same order as those in the kinship matrix by making the PLANT_ID from the kinship matrix into a dataframe, and joining the trait dataframe to it.
+
+```{r}
+k_order <- enframe(colnames(k_one), name = NULL, value = "PLANT_ID")
+one_trait <- k_order |> 
+  left_join(one_trait, by = "PLANT_ID")
+```
+
+Finally, check that all the PLANT_ID in the two dataframes are equal.
+
+```{r}
+all.equal(k_order, select(one_trait, PLANT_ID))
+```
+
+Now, we used mixed.solve() from the rrBLUP package to calculate both the additive genetic variation (Vu) and the error variation in the trait (Ve). Added together, Vu and Ve make up the total trait variation in the population.
+
+```{r}
+
+mod2 <- mixed.solve(y = one_trait$CLMB_BIOMASS, K = k_one)
+
+h2 <- mod2$Vu/(mod2$Vu + mod2$Ve)
+
+round(h2, digits = 4)
+```
+
+h^2^ for the biomass at CLMB is `r round(h2, digits = 4)`. This is a very high heritability, suggesting that additive SNP-trait associations may explain much of the trait variation at this location.
+
+```{r}
+#| include: false
+#| eval: false
+
+# mixed.solve example
+#random population of 200 lines with 1000 markers
+M <- matrix(rep(0,200*1000),200,1000)
+for (i in 1:200) {
+  M[i,] <- ifelse(runif(1000)<0.5,-1,1)
+}
+
+#random phenotypes
+u <- rnorm(1000)
+g <- as.vector(crossprod(t(M),u))
+h2 <- 0.5  #heritability
+y <- g + rnorm(200,mean=0,sd=sqrt((1-h2)/h2*var(g)))
+
+#predict marker effects
+ans <- mixed.solve(y,Z=M)  #By default K = I
+accuracy <- cor(u,ans$u)
+h2 <- ans$Vu/(ans$Vu + ans$Ve)
+
+#predict breeding values
+ans <- mixed.solve(y,K=A.mat(M))
+accuracy <- cor(g,ans$u)
+
+h2 <- ans$Vu/(ans$Vu + ans$Ve)
+```
