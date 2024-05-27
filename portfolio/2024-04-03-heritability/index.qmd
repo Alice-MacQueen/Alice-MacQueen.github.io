@@ -1,12 +1,12 @@
 ---
 title: "Calculating narrow-sense heritability"
-description: "Estimating the genetic component of yield using the rrBLUP package on common bean yield data from the CDBN"
+description: "Estimating the genetic component of yield using the rrBLUP package on switchgrass biomass data from a diversity panel"
 author:
   - name: Alice MacQueen
     url: https://alice-macqueen.github.io/
     orcid: 0000-0002-4606-1832
 date: 2024-04-03
-categories: [rrBLUP, R] # self-defined categories
+categories: [rrBLUP, R, transform, model, descriptive statistics] # self-defined categories
 citation: 
   url: https://alice-macqueen.github.io/posts/2024-04-03-heritability/
 image: preview-image.png

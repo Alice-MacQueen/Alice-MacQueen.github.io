@@ -1,0 +1,15 @@
+{
+  "hash": "ef6b8544bd26c026a2c1afa5f2e0e4fa",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Visualize Multiple Overlaps\"\ndescription: \"Estimating the genetic component of yield using the rrBLUP package on common bean yield data from the CDBN\"\nauthor:\n  - name: Alice MacQueen\n    url: https://alice-macqueen.github.io/\n    orcid: 0000-0002-4606-1832\ndate: 2024-04-04\ncategories: [R, data visualization] # self-defined categories\ncitation: \n  url: https://alice-macqueen.github.io/posts/2024-04-04-upset/\nimage: preview-image.png\ndraft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!\n---\n\n::: {.cell}\n\n```{.r .cell-code}\n# devtools::install_github(\"krassowski/complex-upset\")\nlibrary(ComplexUpset)\n```\n:::\n\n::: {.cell}\n\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

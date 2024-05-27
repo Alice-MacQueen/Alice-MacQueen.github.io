@@ -1,0 +1,49 @@
+---
+title: "Visualize Multiple Overlaps with UpSet"
+description: "Visualize the relationships between many sets using the ComplexUpset package on movie data"
+author:
+  - name: Alice MacQueen
+    url: https://alice-macqueen.github.io/
+    orcid: 0000-0002-4606-1832
+date: 2024-05-20
+categories: [R, data visualization] # self-defined categories
+citation: 
+  url: https://alice-macqueen.github.io/posts/2024-05-20-upset/
+image: preview-image.png
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+---
+
+[UpSet plots](https://upset.app) are a great way to visualize overlaps between datasets with more than three and less than about 30 sets. You can think of these plots as a way to scale up the visualization of overlaps from a Venn diagram, which usually don't scale with clarity beyond three or four sets.
+
+As such, UpSet plots are a great way to visualize overlaps between significant associations from multiple genome-wide associations (GWAS). These plots can visualize the genomic regions, or SNPs, that are significantly associated in one or more GWAS location, year, or trait. I use these plots as a preliminary visualization of overlaps between GWAS, where promising combinations of overlaps can be followed up with more detailed statistical analyses.
+
+```{r}
+# devtools::install_github("krassowski/complex-upset")
+# install.packages("ggplot2movies")
+library(ComplexUpset)
+library(tidyverse)
+library(ggplot2movies)
+```
+
+Here, I am going to demonstrate the basics of making an Upset plot using the `movies` dataset from ggplot2. To keep the examples
+
+## Dataset Preparation
+
+```{r}
+movies <- as.data.frame(ggplot2movies::movies)
+
+genres = colnames(movies)[18:24]
+genres
+movies[genres] = movies[genres] == 1
+
+movies[movies$mpaa == '', 'mpaa'] = NA
+movies <- na.omit(movies)
+```
+
+## ComplexUpset Plot
+
+```{r}
+p <- upset(movies, genres, name = "genre", width_ratio = 0.1)
+
+p + theme_classic()
+```

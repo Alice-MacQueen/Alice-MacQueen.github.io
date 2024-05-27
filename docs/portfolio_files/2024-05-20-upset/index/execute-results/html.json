@@ -1,0 +1,17 @@
+{
+  "hash": "b82dc77524b1aadcc314268206b44747",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Visualize Multiple Overlaps with UpSet\"\ndescription: \"Visualize the relationships between many sets using the ComplexUpset package on movie data\"\nauthor:\n  - name: Alice MacQueen\n    url: https://alice-macqueen.github.io/\n    orcid: 0000-0002-4606-1832\ndate: 2024-05-20\ncategories: [R, data visualization] # self-defined categories\ncitation: \n  url: https://alice-macqueen.github.io/posts/2024-05-20-upset/\nimage: preview-image.png\ndraft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!\n---\n\n\n[UpSet plots](https://upset.app) are a great way to visualize overlaps between datasets with more than three and less than about 30 sets. You can think of these plots as a way to scale up the visualization of overlaps from a Venn diagram, which usually don't scale with clarity beyond three or four sets.\n\nAs such, UpSet plots are a great way to visualize overlaps between significant associations from multiple genome-wide associations (GWAS). These plots can visualize the genomic regions, or SNPs, that are significantly associated in one or more GWAS location, year, or trait. I use these plots as a preliminary visualization of overlaps between GWAS, where promising combinations of overlaps can be followed up with more detailed statistical analyses.\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# devtools::install_github(\"krassowski/complex-upset\")\n# install.packages(\"ggplot2movies\")\nlibrary(ComplexUpset)\nlibrary(tidyverse)\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.1.4     ✔ readr     2.1.5\n✔ forcats   1.0.0     ✔ stringr   1.5.1\n✔ ggplot2   3.5.1     ✔ tibble    3.2.1\n✔ lubridate 1.9.3     ✔ tidyr     1.3.1\n✔ purrr     1.0.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors\n```\n\n\n:::\n\n```{.r .cell-code}\nlibrary(ggplot2movies)\n```\n:::\n\n\nHere, I am going to demonstrate the basics of making an Upset plot using the `movies` dataset from ggplot2. To keep the examples\n\n## Dataset Preparation\n\n\n::: {.cell}\n\n```{.r .cell-code}\nmovies <- as.data.frame(ggplot2movies::movies)\n\ngenres = colnames(movies)[18:24]\ngenres\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\n[1] \"Action\"      \"Animation\"   \"Comedy\"      \"Drama\"       \"Documentary\"\n[6] \"Romance\"     \"Short\"      \n```\n\n\n:::\n\n```{.r .cell-code}\nmovies[genres] = movies[genres] == 1\n\nmovies[movies$mpaa == '', 'mpaa'] = NA\nmovies <- na.omit(movies)\n```\n:::\n\n\n## ComplexUpset Plot\n\n\n::: {.cell}\n\n```{.r .cell-code}\np <- upset(movies, genres, name = \"genre\", width_ratio = 0.1)\n\np + theme_classic()\n```\n\n::: {.cell-output-display}\n![](index_files/figure-html/unnamed-chunk-3-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Alice MacQueen">
+<meta name="dcterms.date" content="2024-04-04">
+<meta name="description" content="Using Logistic Growth Models to model US Population Demographic Changes with a novel (fictional) disease">
+
+<title>Alice MacQueen - Modeling US Population Growth &amp; Demography with a Novel Disease</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Alice MacQueen</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../portfolio.html"> 
+<span class="menu-text">Portfolio</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../resume.html"> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <h1 class="title">Modeling US Population Growth &amp; Demography with a Novel Disease</h1>
+                  <div>
+        <div class="description">
+          Using Logistic Growth Models to model US Population Demographic Changes with a novel (fictional) disease
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">SIR</div>
+                <div class="quarto-category">logistic growth model</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page-left">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p><a href="https://alice-macqueen.github.io/">Alice MacQueen</a> <a href="https://orcid.org/0000-0002-4606-1832" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">April 4, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#disease-transmission-model" id="toc-disease-transmission-model" class="nav-link active" data-scroll-target="#disease-transmission-model">Disease Transmission Model</a></li>
+  <li><a href="#sexually-transmitted-disease-models" id="toc-sexually-transmitted-disease-models" class="nav-link" data-scroll-target="#sexually-transmitted-disease-models">Sexually Transmitted Disease Models</a>
+  <ul class="collapse">
+  <li><a href="#an-empirical-model" id="toc-an-empirical-model" class="nav-link" data-scroll-target="#an-empirical-model">An Empirical Model</a></li>
+  </ul></li>
+  <li><a href="#demographic-model" id="toc-demographic-model" class="nav-link" data-scroll-target="#demographic-model">Demographic Model</a>
+  <ul class="collapse">
+  <li><a href="#when-in-doubt-use-empirical-parameter-estimates" id="toc-when-in-doubt-use-empirical-parameter-estimates" class="nav-link" data-scroll-target="#when-in-doubt-use-empirical-parameter-estimates">When in doubt, use empirical parameter estimates</a></li>
+  <li><a href="#recapitulate-the-uns-model" id="toc-recapitulate-the-uns-model" class="nav-link" data-scroll-target="#recapitulate-the-uns-model">Recapitulate the UN’s model</a></li>
+  <li><a href="#add-a-gds-population-gds-transmission" id="toc-add-a-gds-population-gds-transmission" class="nav-link" data-scroll-target="#add-a-gds-population-gds-transmission">Add a GDS population &amp; GDS transmission</a></li>
+  <li><a href="#change-r-for-gds" id="toc-change-r-for-gds" class="nav-link" data-scroll-target="#change-r-for-gds">Change <span class="math inline">\(r\)</span> for GDS</a></li>
+  <li><a href="#explore-plausible-gds-model-parameters" id="toc-explore-plausible-gds-model-parameters" class="nav-link" data-scroll-target="#explore-plausible-gds-model-parameters">Explore plausible GDS model parameters</a></li>
+  <li><a href="#model-a-plausible-gds-birth-rate" id="toc-model-a-plausible-gds-birth-rate" class="nav-link" data-scroll-target="#model-a-plausible-gds-birth-rate">Model a plausible GDS birth rate</a></li>
+  <li><a href="#add-important-demographic-details" id="toc-add-important-demographic-details" class="nav-link" data-scroll-target="#add-important-demographic-details">Add important demographic details</a></li>
+  </ul></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+
+
+
+
+
+<p>Here’s a population modeling project from the writer Eugene Fischer. He is thinking about writing a follow-up story to his award winning novella, <a href="https://www.eugenefischer.com/writing/the-new-mother/">The New Mother</a>, and wanted to know how the fictional disease he invented for <a href="https://www.eugenefischer.com/writing/the-new-mother/">The New Mother</a> could impact demographics in the US population 50 years after the events of that story.</p>
+<p>The disease in <a href="https://www.eugenefischer.com/writing/the-new-mother/">The New Mother</a> is called GDS - Gamete Diploidy Syndrome. It’s a sexually transmitted disease that converts men &amp; women’s gametes, normally haploid, into diploid gametes. As the novella puts it, this means:</p>
+<blockquote class="blockquote">
+<p><em>Candace Montross’s eggs, like the eggs of a growing number of women around the world, are not haploid. They are diploid. Her eggs are fully capable of implanting in her womb and growing into a baby that shares every one of Candace’s genes, a perfect clone of her only biological parent. They weren’t always that way. Her gametes were altered after she was raped by a man in Houston who also had diploid gametes, and who also wasn’t born that way. They both, now, have GDS. Since diploid sperm are nonviable, Candace’s rapist is a sterile carrier of the disease, which renders all men who contract it sterile. But they can still transmit it to women, whose diploid eggs will put them at risk for pregnancy whenever they ovulate. Their genetically identical children will themselves be carriers, and will similarly begin auto-impregnating when they reach puberty. This is a new form of reproduction which crowds out the old, and only time will tell which method is more robust.</em></p>
+</blockquote>
+<p>So, what are the population-level impacts of this 50 years later? And how do we model the demographic shift towards more people who are assigned female at birth (AFAB)?</p>
+<section id="disease-transmission-model" class="level2">
+<h2 class="anchored" data-anchor-id="disease-transmission-model">Disease Transmission Model</h2>
+<p>I first considered using a classic model of disease, the SIR model, to model GDS, and then use logistic growth models to look at the susceptible and infected individuals (individuals without and with GDS, respectively) using different growth parameters.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology">SIR model</a> is a differential equation model, <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#Variations_on_the_basic_SIR_model">with many variants</a>, used to mathematically model the spread of an infectious disease through a population.</p>
+<p>I was able to show Eugene effects of changing details of the SIR model very quickly using Sinead Morris’s nice shinySIR package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"devtools"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install_github</span>(<span class="st">"SineadMorris/shinySIR"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shinySIR)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">run_shiny</span>(<span class="at">model =</span> <span class="st">"SIR"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>However, most SIR model variants proved unsuitable right away, because GDS is a permanent condition - there are no Removed individuals (the “R” in SIR - these can be immune or deceased individuals), and individuals do not become susceptible again (SIS models). There is a maternal effect of this disease, but unlike in MSIR models where there is a brief window of maternally-imparted immunity, babies born with this disease remain infected for life and can pass it on to their offspring in turn.</p>
+<p>So, I decided SIR models wouldn’t work for the disease transmission portion of this project.</p>
+</section>
+<section id="sexually-transmitted-disease-models" class="level2">
+<h2 class="anchored" data-anchor-id="sexually-transmitted-disease-models">Sexually Transmitted Disease Models</h2>
+<p>GDS is an uncurable STD, meaning SIR models weren’t really appropriate.</p>
+<p>My next idea was to look up information for other sexually transmitted diseases. I went into a brief cul-de-sac exploring parameters that would influence the number of people GDS was passed on to. To explore that, I needed to know how many sexual partners Americans have on average. This study <span class="citation" data-cites="haderxhanaj2014">(<a href="#ref-haderxhanaj2014" role="doc-biblioref">Haderxhanaj et al. 2014</a>)</span> looks at the number of sexual partners Americans from ages 15-44 have, using ~20K individuals with data from 2006-2010, and would help for estimating this.</p>
+<p>However, this still seemed like it would be much more complicated than necessary as I would then need to include different probabilities of transmission across different demographic bins, and my aim was to build a model quickly without unnecessary complications.</p>
+<section id="an-empirical-model" class="level3">
+<h3 class="anchored" data-anchor-id="an-empirical-model">An Empirical Model</h3>
+<p>My next idea was to see if we could base GDS transmission in our model off of a real sexually transmitted disease that we have empirical data for. My first thought was to look for HIV transmission rates and I quickly found a very nice study of HIV transmission rates from seropositive to seronegative partners <span class="citation" data-cites="holtgrave2009">(<a href="#ref-holtgrave2009" role="doc-biblioref">Holtgrave et al. 2009</a>)</span>.</p>
+<p>From Holtgrave:</p>
+<blockquote class="blockquote">
+<p>An additional helpful measure would be the annual HIV transmission rate (<span class="math inline">\(T\)</span>). Although various definitions of the HIV transmission rate are possible, we define it here as follows: for every 100 persons living with HIV, the number of HIV infections transmitted to HIV-seronegative partners in 1 year. The transmission rate for a given year,&nbsp;<span class="math inline">\(x\)</span>, is calculated as follows:&nbsp;<span class="math inline">\(T(x) = [I(x)/P(x)] × 100\)</span> [where <span class="math inline">\(I(x)\)</span> is the number of new HIV infections in year&nbsp;<span class="math inline">\(x\)</span>, and&nbsp;<span class="math inline">\(P(x)\)</span> is the prevalence of persons living with HIV in year&nbsp;<span class="math inline">\(x\)</span>]. Although a simple derivative of&nbsp;<span class="math inline">\(I(x)\)</span> and&nbsp;<span class="math inline">\(P(x)\)</span>, the transmission rate provides an important gauge of the speed of spread of HIV infection. Further, by examining trends in&nbsp;<span class="math inline">\(T(x)\)</span> over the course of the epidemic, it provides some crude indication of whether prevention efforts are serving to control the rapidity of the spread of the epidemic.</p>
+</blockquote>
+<p>They provide this beautiful table that I decided to use to simply convert individuals from susceptible to infected as part of a two-population demographic model, at least for the first 30 years of the course of the spread of the disease. Given that the rate of transmission of HIV stabilized in the last 15 years of the study, it seemed reasonable to keep that transmission rate for the last 20 years of our 50 years as a rate of ‘unintended transmission’ for a known disease.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Holtgrave_etal_2009_Table1.jpeg" class="img-fluid figure-img"></p>
+<figcaption>Holtgrave et al 2009 Table 1. Annual HIV Transmission Rates per 100 Persons Living With HIV [T(<em>x</em>)], 1977-2006.</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="demographic-model" class="level2">
+<h2 class="anchored" data-anchor-id="demographic-model">Demographic Model</h2>
+<p>Next, I considered the population growth model that I should build.</p>
+<p>The population growth dynamics are also going to differ between the susceptible and infected populations over the course of 50 years. Crucially, infected individuals produce offspring that also join the infected pool. These individuals may also have a higher number of offspring and begin having children at an earlier age than individuals from the susceptible population, particularly if access to birth control is limited. This could cause a major demographic shift over 50 years, even if the transmission rate between infected and susceptible individuals is very low.</p>
+<p>I decided to use two logistic growth models, one for the susceptible population and one for the infected population. In a logistic growth model, the population grows at each time step as an exponential function of r, the population growth rate, and t, the length of the time step. I then overlaid transmission rate estimates from the HIV epidemic on to the yearly demographic estimates to determine how individuals move between these populations: there will be immigration from the susceptible to the infected pool caused by individuals becoming infected with GDS.</p>
+<section id="when-in-doubt-use-empirical-parameter-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="when-in-doubt-use-empirical-parameter-estimates">When in doubt, use empirical parameter estimates</h3>
+<p>I again decided to find empirical data to model the population growth rate r in the US. This <a href="https://www.macrotrends.net/global-metrics/countries/USA/united-states/population">website</a> has the UN’s estimates for the US growth rate from now until 2102, more than sufficient for our purposes. Given that data and the yearly HIV transmission rate data, each time step, t, will be 1 year, and I will change the r values and T(x) values each year.</p>
+<p>Next, I built a table of these values. Remember, I was trying to do this quickly for a very small amount of data, so I just entered values by hand into vectors, then made a dataframe of the resulting vectors.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>r_UN <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.53</span>, <span class="fl">0.52</span>, <span class="fl">0.51</span>, <span class="fl">0.50</span>, <span class="fl">0.49</span>, <span class="fl">0.48</span>, <span class="fl">0.48</span>, <span class="fl">0.47</span>, <span class="fl">0.45</span>, <span class="fl">0.44</span>, <span class="fl">0.43</span>, <span class="fl">0.41</span>, <span class="fl">0.40</span>, <span class="fl">0.38</span>, <span class="fl">0.36</span>, <span class="fl">0.35</span>, <span class="fl">0.33</span>, <span class="fl">0.31</span>, <span class="fl">0.29</span>, <span class="fl">0.28</span>, <span class="fl">0.26</span>, <span class="fl">0.24</span>, <span class="fl">0.23</span>, <span class="fl">0.21</span>, <span class="fl">0.20</span>, <span class="fl">0.18</span>, <span class="fl">0.17</span>, <span class="fl">0.16</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.14</span>, <span class="fl">0.14</span>, <span class="fl">0.14</span>, <span class="fl">0.14</span>, <span class="fl">0.14</span>, <span class="fl">0.14</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.16</span>, <span class="fl">0.16</span>, <span class="fl">0.16</span>, <span class="fl">0.16</span>, <span class="fl">0.16</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.15</span>, <span class="fl">0.14</span>, <span class="fl">0.14</span>, <span class="fl">0.13</span>, <span class="fl">0.12</span>, <span class="fl">0.11</span>, <span class="fl">0.1</span>, <span class="fl">0.09</span>, <span class="fl">0.08</span>, <span class="fl">0.07</span>, <span class="fl">0.07</span>, <span class="fl">0.06</span>)<span class="sc">/</span><span class="dv">100</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>T_HIV <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">100.4</span>, <span class="fl">50.4</span>, <span class="fl">33.7</span>, <span class="fl">92.3</span>, <span class="fl">48.3</span>, <span class="fl">61.6</span>, <span class="fl">38.6</span>, <span class="fl">44.4</span>, <span class="fl">31.4</span>, <span class="fl">17.4</span>, <span class="fl">15.3</span>, <span class="fl">13.7</span>, <span class="fl">12.6</span>, <span class="fl">11.7</span>, <span class="fl">6.6</span>, <span class="fl">6.6</span>, <span class="fl">6.6</span>, <span class="fl">6.6</span>, <span class="fl">6.6</span>, <span class="fl">6.5</span>, <span class="fl">7.5</span>, <span class="fl">7.1</span>, <span class="fl">6.8</span>, <span class="fl">6.2</span>, <span class="fl">5.9</span>, <span class="fl">5.7</span>, <span class="fl">5.5</span>, <span class="fl">5.3</span>, <span class="fl">5.2</span>, <span class="fl">5.0</span>, <span class="fu">rep</span>(<span class="fl">5.0</span>, <span class="dv">29</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Year <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2023</span><span class="sc">:</span><span class="dv">2081</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">Year =</span> Year, <span class="at">T_HIV =</span> T_HIV, <span class="at">r_UN =</span> r_UN)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="recapitulate-the-uns-model" class="level3">
+<h3 class="anchored" data-anchor-id="recapitulate-the-uns-model">Recapitulate the UN’s model</h3>
+<p>As a check of my logistic growth model, I first tried to recreate the UN’s population predictions for each year using the growth rates they provided.</p>
+<p>This proved important because my first model was a logistic growth model with carrying capacity. This <a href="https://www.macrotrends.net/global-metrics/countries/USA/united-states/population">website</a> makes it look like the US’s carrying capacity should be about 400 million people.</p>
+<p>[<img src="images/united-states-population-2024-04-05-macrotrends.png" class="img-fluid">](<a href="https://www.macrotrends.net/global-metrics/countries/USA/united-states/population">U.S. Population 1950-2024</a>)</p>
+<p>As a quick model spot-check, I took the US population in 2023 (339 million), the r for that year (0.53%), and determined which model gave the current 2024 U.S. population (341 million). From the website:</p>
+<ul>
+<li><p>The current population of U.S. in 2024 is&nbsp;<strong>341,814,420</strong>, a&nbsp;<strong>0.53% increase</strong>&nbsp;from 2023.</p></li>
+<li><p>The population of U.S. in 2023 was&nbsp;<strong>339,996,563</strong>, a&nbsp;<strong>0.5% increase</strong>&nbsp;from 2022.</p></li>
+</ul>
+<p>First, the model with a carrying capacity parameter, K:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> <span class="dv">400000000</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>P_2023 <span class="ot">&lt;-</span> <span class="dv">339996563</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_0 <span class="ot">&lt;-</span> <span class="fu">c</span>(P_2023, <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">58</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2024 population</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>K<span class="sc">*</span>pop_model_df<span class="sc">$</span>P_0[<span class="dv">1</span>]<span class="sc">*</span><span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_UN[<span class="dv">1</span>]) <span class="sc">/</span> (K <span class="sc">+</span> pop_model_df<span class="sc">$</span>P_0[<span class="dv">1</span>]<span class="sc">*</span>(<span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_UN[<span class="dv">1</span>]) <span class="sc">-</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 340266375</code></pre>
+</div>
+</div>
+<p>This model accounts for carrying capacity but curbs growth too strongly to be realistic for our provided population data - the population is 340.2 million, too low by 1.6 million individuals.</p>
+<p>Here, instead, is a basic logistic growth model, without carrying capacity:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_0[<span class="dv">1</span>]<span class="sc">*</span><span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_UN[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 341803328</code></pre>
+</div>
+</div>
+<p>A basic logistic growth model without carrying capacity recreates the provided population data for 2024, given the r that was provided. So the empirical data has carrying capacity ‘baked in’ to the provided population growth rates.</p>
+<p>Last, I checked that I could accurately capture the UN’s future predictions with the model before I added complexity by making two separate models.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_0[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    pop_model_df<span class="sc">$</span>P_0[i]<span class="sc">*</span><span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_UN[i])</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pop_model_df) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">T_HIV</th>
+<th style="text-align: right;">r_UN</th>
+<th style="text-align: right;">P_0</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2023</td>
+<td style="text-align: right;">100.4</td>
+<td style="text-align: right;">0.0053</td>
+<td style="text-align: right;">339996563</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2024</td>
+<td style="text-align: right;">50.4</td>
+<td style="text-align: right;">0.0052</td>
+<td style="text-align: right;">341803328</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2025</td>
+<td style="text-align: right;">33.7</td>
+<td style="text-align: right;">0.0051</td>
+<td style="text-align: right;">343585335</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2026</td>
+<td style="text-align: right;">92.3</td>
+<td style="text-align: right;">0.0050</td>
+<td style="text-align: right;">345342096</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2027</td>
+<td style="text-align: right;">48.3</td>
+<td style="text-align: right;">0.0049</td>
+<td style="text-align: right;">347073131</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2028</td>
+<td style="text-align: right;">61.6</td>
+<td style="text-align: right;">0.0048</td>
+<td style="text-align: right;">348777962</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>A spot check of several years against the website’s predictions showed that this model accurately captures the UN’s demographic model for the US, to at least the first four digits.</p>
+</section>
+<section id="add-a-gds-population-gds-transmission" class="level3">
+<h3 class="anchored" data-anchor-id="add-a-gds-population-gds-transmission">Add a GDS population &amp; GDS transmission</h3>
+<p>Once I was confident in the model, I added a layer of complexity. There are now two populations within the US: those infected with GDS (<span class="math inline">\(P_{GDS}\)</span>) and susceptible (<span class="math inline">\(P_S\)</span>), which freely mix. Individuals move from susceptible to infected with a probability <span class="math inline">\((P_{GDS} * T_{HIV}) / 100\)</span>. Without changing <span class="math inline">\(r\)</span> for these two populations, what would <span class="math inline">\(P_S\)</span> and <span class="math inline">\(P_{GDS}\)</span> be after 50 years?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_GDS <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10000</span>, <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">58</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="ot">&lt;-</span> pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">P_S =</span> P_0 <span class="sc">-</span> P_GDS)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>i <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>) {</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_GDS[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span>T_HIV[i]<span class="sc">/</span><span class="dv">100</span> <span class="sc">+</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    pop_model_df<span class="sc">$</span>P_GDS[i]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_S[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> pop_model_df<span class="sc">$</span>P_0[i <span class="sc">+</span> <span class="dv">1</span>] <span class="sc">-</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    pop_model_df<span class="sc">$</span>P_GDS[i <span class="sc">+</span> <span class="dv">1</span>]</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fraction_I =</span> <span class="fu">round</span>(P_GDS <span class="sc">/</span> P_0, <span class="at">digits =</span> <span class="dv">4</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">2073</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">T_HIV</th>
+<th style="text-align: right;">r_UN</th>
+<th style="text-align: right;">P_0</th>
+<th style="text-align: right;">P_GDS</th>
+<th style="text-align: right;">P_S</th>
+<th style="text-align: right;">fraction_I</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2073</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0013</td>
+<td style="text-align: right;">388477599</td>
+<td style="text-align: right;">6596083</td>
+<td style="text-align: right;">381881516</td>
+<td style="text-align: right;">0.017</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>So, if GDS appeared in the US and had HIV’s transmission rate, but did not affect population growth, then 50 years later, 6.5 million people would have GDS in the U.S. In other words, 1.7% of the population would be living with GDS.</p>
+</section>
+<section id="change-r-for-gds" class="level3">
+<h3 class="anchored" data-anchor-id="change-r-for-gds">Change <span class="math inline">\(r\)</span> for GDS</h3>
+<p>Now I modeled births in each population separately, which means I set two population-specific growth rates. Let’s call the UN’s predicted growth rate <span class="math inline">\(r_{UN}\)</span>. The population with GDS now has twice as high a growth rate as the susceptible population: <span class="math inline">\(r_{GDS} = r_{UN} * 2\)</span>. This starts right at the beginning of the model and continues throughout. That will affect the total number of people in the U.S. - let’s call that <span class="math inline">\(P_{US}\)</span>, as well as <span class="math inline">\(P_{GDS}\)</span> and <span class="math inline">\(P_{S}\)</span> (S for susceptible; a common way to refer to unexposed, uninfected individuals in disease models); these will now need to be recalculated each year.</p>
+<p>I initialized the model in 2023 with a starting <span class="math inline">\(P_{GDS}\)</span> of 10,000 individuals, and create a new <span class="math inline">\(r_{GDS}\)</span> variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-7"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-7-1"><a href="#annotated-cell-7-1" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="ot">&lt;-</span> pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-7-2"><a href="#annotated-cell-7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">r_GDS =</span> r_UN <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-7-3"><a href="#annotated-cell-7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">P_UN_predicted =</span> P_0, <span class="at">P_GDS_transmission_only =</span> P_GDS,</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-7" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-7-4" class="code-annotation-target"><a href="#annotated-cell-7-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">P_S_transmission_only =</span> P_S)</span>
+<span id="annotated-cell-7-5"><a href="#annotated-cell-7-5" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_GDS <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10000</span>, <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">58</span>))</span>
+<span id="annotated-cell-7-6"><a href="#annotated-cell-7-6" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="ot">&lt;-</span> pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-7-7"><a href="#annotated-cell-7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">P_S =</span> P_UN_predicted <span class="sc">-</span> P_GDS,</span>
+<span id="annotated-cell-7-8"><a href="#annotated-cell-7-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">P_BOTH =</span> P_S <span class="sc">+</span> P_GDS)</span>
+<span id="annotated-cell-7-9"><a href="#annotated-cell-7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-7-10"><a href="#annotated-cell-7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pop_model_df, <span class="at">n =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-7-11"><a href="#annotated-cell-7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-7" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-7" data-code-lines="4" data-code-annotation="1">Rename our previous P_0 variable to reflect that it is the UN’s prediction for the US population size, as well as the P_GDS and P_S variables to reflect that these came from a model with transmission only.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 19%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">T_HIV</th>
+<th style="text-align: right;">r_UN</th>
+<th style="text-align: right;">P_UN_predicted</th>
+<th style="text-align: right;">P_GDS_transmission_only</th>
+<th style="text-align: right;">P_S_transmission_only</th>
+<th style="text-align: right;">r_GDS</th>
+<th style="text-align: right;">P_GDS</th>
+<th style="text-align: right;">P_S</th>
+<th style="text-align: right;">P_BOTH</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2023</td>
+<td style="text-align: right;">100.4</td>
+<td style="text-align: right;">0.0053</td>
+<td style="text-align: right;">339996563</td>
+<td style="text-align: right;">10000.00</td>
+<td style="text-align: right;">339986563</td>
+<td style="text-align: right;">0.0106</td>
+<td style="text-align: right;">10000</td>
+<td style="text-align: right;">339986563</td>
+<td style="text-align: right;">339996563</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2024</td>
+<td style="text-align: right;">50.4</td>
+<td style="text-align: right;">0.0052</td>
+<td style="text-align: right;">341803328</td>
+<td style="text-align: right;">20040.00</td>
+<td style="text-align: right;">341783288</td>
+<td style="text-align: right;">0.0104</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2025</td>
+<td style="text-align: right;">33.7</td>
+<td style="text-align: right;">0.0051</td>
+<td style="text-align: right;">343585335</td>
+<td style="text-align: right;">30140.16</td>
+<td style="text-align: right;">343555195</td>
+<td style="text-align: right;">0.0102</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Here, I ran the model for 50 years, then looked at some population demographic parameters in 2073, 50 years later.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_GDS[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span><span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_GDS[i]) <span class="sc">+</span> pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span>T_HIV[i]<span class="sc">/</span><span class="dv">100</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_S[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> pop_model_df<span class="sc">$</span>P_S[i]<span class="sc">*</span><span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_UN[i]) <span class="sc">-</span> pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span>T_HIV[i]<span class="sc">/</span><span class="dv">100</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">P_BOTH =</span> P_S <span class="sc">+</span> P_GDS,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">fraction_I =</span> <span class="fu">round</span>(P_GDS <span class="sc">/</span> P_BOTH, <span class="at">digits =</span> <span class="dv">4</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">2073</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 12%">
+<col style="width: 19%">
+<col style="width: 17%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Year</th>
+<th style="text-align: right;">T_HIV</th>
+<th style="text-align: right;">r_UN</th>
+<th style="text-align: right;">P_UN_predicted</th>
+<th style="text-align: right;">P_GDS_transmission_only</th>
+<th style="text-align: right;">P_S_transmission_only</th>
+<th style="text-align: right;">r_GDS</th>
+<th style="text-align: right;">P_GDS</th>
+<th style="text-align: right;">P_S</th>
+<th style="text-align: right;">P_BOTH</th>
+<th style="text-align: right;">fraction_I</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2073</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.0013</td>
+<td style="text-align: right;">388477599</td>
+<td style="text-align: right;">6596083</td>
+<td style="text-align: right;">381881516</td>
+<td style="text-align: right;">0.0026</td>
+<td style="text-align: right;">8247270</td>
+<td style="text-align: right;">380471596</td>
+<td style="text-align: right;">388718866</td>
+<td style="text-align: right;">0.0212</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>If we start with 10K individuals with GDS, have a HIV-level rate of transmission and a growth rate that is twice as high in individuals with GDS, then in 50 years, 8.2 million people will have GDS, 2.1% of the US population.</p>
+<p>8.2 million is a step up from 6.5 million people, but not a big one! It’s not clear that a disease with this much penetrance would have a major impact on US politics or demography. But how do we explore effects on demography?</p>
+</section>
+<section id="explore-plausible-gds-model-parameters" class="level3">
+<h3 class="anchored" data-anchor-id="explore-plausible-gds-model-parameters">Explore plausible GDS model parameters</h3>
+<p>Eugene and I brainstormed plausible ways to change the demographic model. We really wanted to know how these changes affected the sex ratio in the U.S. That involved separating out the growth rate of the GDS population due to transmission (which does not affect the sex ratio) from the growth rate of the GDS population due to births (who are all <a href="https://www.edi.nih.gov/people/sep/lgbti/safezone/terminology">AFAB</a>).</p>
+<p>Here I implement a model where people who received GDS via transmission and birth are separated. This model also had a consistent high growth rate, 8x higher than the 2024 US growth rate, for the population with GDS, of 4%:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 0.0639/0.005</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>r_GDS_increase <span class="ot">=</span> <span class="fl">0.0639</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>P_GDS_start <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="ot">&lt;-</span> pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">r_GDS =</span> r_GDS_increase)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_GDS <span class="ot">&lt;-</span> <span class="fu">c</span>(P_GDS_start, <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">58</span>))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="ot">&lt;-</span> pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">P_S =</span> P_UN_predicted <span class="sc">-</span> P_GDS)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_GDS_immigrants <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_GDS_births <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>) {</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_GDS_immigrants[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">round</span>(pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span>T_HIV[i]<span class="sc">/</span><span class="dv">100</span> )</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_GDS_births[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">round</span>(pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span><span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_GDS[i]) <span class="sc">-</span> pop_model_df<span class="sc">$</span>P_GDS[i])</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_GDS[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> pop_model_df<span class="sc">$</span>P_GDS_immigrants[i <span class="sc">+</span> <span class="dv">1</span>] <span class="sc">+</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    pop_model_df<span class="sc">$</span>P_GDS_births[i <span class="sc">+</span> <span class="dv">1</span>] <span class="sc">+</span> pop_model_df<span class="sc">$</span>P_GDS[i]</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_S[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> pop_model_df<span class="sc">$</span>P_S[i]<span class="sc">*</span><span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_UN[i]) <span class="sc">-</span> pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span>T_HIV[i]<span class="sc">/</span><span class="dv">100</span> </span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">P_BOTH =</span> P_S <span class="sc">+</span> P_GDS,</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">fraction_I =</span> <span class="fu">round</span>(P_GDS <span class="sc">/</span> P_BOTH, <span class="at">digits =</span> <span class="dv">4</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">P_GDS_births =</span> <span class="fu">sum</span>(P_GDS_births, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  P_GDS_births
+         &lt;dbl&gt;
+1     63539715</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="dv">16922855</span><span class="sc">/</span><span class="dv">404976064</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0417873</code></pre>
+</div>
+</div>
+<p>At 8x higher a rate than the 2024 rate, there are 39M people with GDS in the US, 10% of the population. However, an r of 0.04 (4%) is very high; if that was by country, <a href="https://en.wikipedia.org/wiki/List_of_countries_by_population_growth_rate">it’d be the third highest in the world</a>.</p>
+</section>
+<section id="model-a-plausible-gds-birth-rate" class="level3">
+<h3 class="anchored" data-anchor-id="model-a-plausible-gds-birth-rate">Model a plausible GDS birth rate</h3>
+<p>For reasons that will be explored in the novella, Eugene thought that the birth rate for women with GDS might end up being much higher than the US’s predicted birth rate. Still, maybe a rate of 4% was implausibly high. Eugene thought that a range of like 3-4 children per women for GDS seemed reasonable, maybe eventually trending down to 3.</p>
+<p>I wasn’t able to quickly work out the conversion used between number of children born per woman and yearly birth rate. The CDC does give a nice definition of how birth rate and population growth rate are related, but it is for women in the demographic range of 15 - 44. I was trying to model GDS without involving the complexity of demographic modeling, so I looked again at empirical data. Could I find a time period or country where the current fertility rate was over 3 children per woman? If so, what was the birth rate in that period?</p>
+<p>The baby boom in the U.S. was a clear candidate - between 1950 and 1965, the fertility rate was between 3.0 and 3.6, and the birth rate was 24.26 dropping to 20.34 in this period. In Kenya in 2024, the fertility rate is 3.21 births per woman, and there are 27.071 births per 1000 women. In 2012, when the fertility rate was 4.178 births per women, the birth rate was 33.717. The current birth rate in the US is 12.009 births per 1000 women. That gave me a range for <span class="math inline">\(r_{GDS}\)</span> of up to 0.0273 that seemed reasonable for a modern-day baby boom, which is about 5x the current growth rate in the U.S.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">12.009+2.768-9.226</span>)<span class="sc">/</span><span class="dv">1000</span> <span class="co"># calculate Current U.S. r from births, deaths, immigration - this is approximately the correct rate for 2024</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.005551</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">33.717+2.768-9.226</span>)<span class="sc">/</span><span class="fl">1000.</span> <span class="co"># Kenya 2012 birth rate, fertility rate 4.178</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.027259</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">27.071+2.768-9.226</span>)<span class="sc">/</span><span class="fl">1000.</span> <span class="co"># Kenya 2024 birth rate, fertility rate 3.214</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.020613</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(<span class="fl">24.268+2.768-9.226</span>)<span class="sc">/</span><span class="dv">1000</span>  <span class="co"># US 1950 birth rate, fertility rate 3.148</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.01781</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0.0273</span><span class="sc">/</span><span class="fl">0.0053</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.150943</code></pre>
+</div>
+</div>
+<p>To model all of these growth rates, I made a function to calculate the outcome in a dataframe (so we don’t copy and paste code any further).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>get_GDS_model <span class="ot">&lt;-</span> <span class="cf">function</span>(df, <span class="at">r_GDS =</span> <span class="fl">0.02</span>, <span class="at">P_GDS_start =</span> <span class="dv">10000</span>, </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">N_year =</span> <span class="dv">50</span>) {</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">r_GDS =</span> r_GDS)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>P_GDS <span class="ot">&lt;-</span> <span class="fu">c</span>(P_GDS_start, <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="fu">nrow</span>(df) <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">P_S =</span> P_UN_predicted <span class="sc">-</span> P_GDS)</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>P_GDS_immigrants <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>P_GDS_births <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>P_S_births <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>N_year) {</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>P_GDS_immigrants[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> </span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">round</span>(df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span>T_HIV[i]<span class="sc">/</span><span class="dv">100</span> )</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>P_GDS_births[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> </span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">round</span>(df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span><span class="fu">exp</span>(df<span class="sc">$</span>r_GDS[i]) <span class="sc">-</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>              df<span class="sc">$</span>P_GDS[i])</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>P_GDS[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> df<span class="sc">$</span>P_GDS_immigrants[i <span class="sc">+</span> <span class="dv">1</span>] <span class="sc">+</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>      df<span class="sc">$</span>P_GDS_births[i <span class="sc">+</span> <span class="dv">1</span>] <span class="sc">+</span> df<span class="sc">$</span>P_GDS[i]</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>P_S_births[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> </span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>      df<span class="sc">$</span>P_S[i]<span class="sc">*</span><span class="fu">exp</span>(df<span class="sc">$</span>r_UN[i]) <span class="sc">-</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>      df<span class="sc">$</span>P_S[i]</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    df<span class="sc">$</span>P_S[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> </span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>      df<span class="sc">$</span>P_S[i]<span class="sc">*</span><span class="fu">exp</span>(df<span class="sc">$</span>r_UN[i]) <span class="sc">-</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>      df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span>T_HIV[i]<span class="sc">/</span><span class="dv">100</span> </span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">replace_na</span>(<span class="fu">list</span>(<span class="at">P_GDS_births =</span> <span class="dv">0</span>, <span class="at">P_S_births =</span> <span class="dv">0</span>, </span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>                    <span class="at">P_GDS_immigrants =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">P_BOTH =</span> P_S <span class="sc">+</span> P_GDS,</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>           <span class="at">fraction_I =</span> <span class="fu">round</span>(P_GDS <span class="sc">/</span> P_BOTH, <span class="at">digits =</span> <span class="dv">4</span>),</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>           <span class="at">fraction_AFAB =</span> (P_S_births<span class="sc">*</span>(<span class="dv">100</span><span class="sc">/</span><span class="dv">205</span>) <span class="sc">+</span> P_GDS_births) <span class="sc">/</span> </span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>             (P_GDS_births <span class="sc">+</span> P_S_births),</span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>           <span class="at">fraction_AMAB =</span> (P_S_births<span class="sc">*</span>(<span class="dv">105</span><span class="sc">/</span><span class="dv">205</span>)) <span class="sc">/</span> </span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>             (P_GDS_births <span class="sc">+</span> P_S_births),</span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>           <span class="at">Total_I_births =</span> <span class="fu">cumsum</span>(P_GDS_births),</span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>           <span class="at">Total_S_births =</span> <span class="fu">cumsum</span>(P_S_births))</span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p>With an r of 2.7%, ~4 births per woman, the difference is 1.8% (50.9% women) in 2073, and 7.4 million girls were born with GDS.</p></li>
+<li><p>With an r of 2.06%, ~3+ births per woman with GDS, the difference is 1.1% (50.57% women), and 4.5 million girls were born with GDS.</p></li>
+<li><p>With an r of 1.78%, a 1950 Baby Boom rate, ~3+ births per woman with GDS, the difference is 0.9% (50.45% women), and 3.5 million girls were born with GDS.</p></li>
+</ul>
+<p>An r of 2 - 2.7% probably has the most interesting science fictional implications. There, we have somewhere between 4 and 10 million girls born with GDS, which is enough to skew the sex ratio 1% to 2% overall. This effect would be more pronounced in younger demographics. Perhaps it is time to add a little demography - as political campaigns about getting the sex ratio back to 50:50 would almost certainly look at younger age cohort sex ratios, as these would probably be more alarmingly different.</p>
+<p>By 2073, what fraction of people ages 18-34 are women, vs men? And what fraction of babies born that year are AFAB vs AMAB?</p>
+</section>
+<section id="add-important-demographic-details" class="level3">
+<h3 class="anchored" data-anchor-id="add-important-demographic-details">Add important demographic details</h3>
+<p>Finally, we wanted to consider the most important demographic details - mostly, that the sex ratio should get more and more skewed as time goes on. In other words, younger age groups should have more skewed sex ratios than older groups.</p>
+<p>Current sex ratios are 105:100 AMAB:AFAB, according to <a href="https://www.pewresearch.org/religion/2022/08/23/sidebar-sex-ratios-around-the-world/">this Pew research article</a>.</p>
+<p>I looked at the fraction of babies born AFAB in 2073 in a model with <span class="math inline">\(r_{GDS}\)</span> of 2%. The plot below shows how the fraction of AMAB babies born each year goes down over time in this model:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pop_df <span class="ot">&lt;-</span> <span class="fu">get_GDS_model</span>(pop_model_df, <span class="at">r_GDS =</span> <span class="fl">0.0206</span>) </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>pop_df <span class="sc">|&gt;</span> </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">2073</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(fraction_I<span class="sc">:</span>fraction_AMAB) <span class="sc">|&gt;</span> </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">fraction_I</th>
+<th style="text-align: right;">fraction_AFAB</th>
+<th style="text-align: right;">fraction_AMAB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.0371</td>
+<td style="text-align: right;">0.6498358</td>
+<td style="text-align: right;">0.3501642</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pop_df <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> fraction_AMAB)) <span class="sc">+</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="fl">0.3</span>, <span class="fl">0.51</span>)) <span class="sc">+</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Fraction Male Babies"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Then, I summed up the number of people of both sexes who would be between 18 and 35 years old in 2073.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pop_df <span class="sc">|&gt;</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">between</span>(Year, <span class="dv">2038</span>, <span class="dv">2055</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Total_I_cohort =</span> <span class="fu">cumsum</span>(P_GDS_births),</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">Total_S_cohort =</span> <span class="fu">cumsum</span>(P_S_births),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">fraction_AFAB_cohort =</span> (Total_S_cohort<span class="sc">*</span>(<span class="dv">100</span><span class="sc">/</span><span class="dv">205</span>) <span class="sc">+</span> Total_I_cohort) <span class="sc">/</span> </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>             (Total_I_cohort <span class="sc">+</span> Total_S_cohort),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">fraction_AMAB_cohort =</span> (Total_S_cohort<span class="sc">*</span>(<span class="dv">105</span><span class="sc">/</span><span class="dv">205</span>)) <span class="sc">/</span> </span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>             (Total_I_cohort <span class="sc">+</span> Total_S_cohort)) <span class="sc">|&gt;</span> </span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">2055</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(fraction_AFAB_cohort<span class="sc">:</span>fraction_AMAB_cohort) <span class="sc">|&gt;</span> <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">fraction_AFAB_cohort</th>
+<th style="text-align: right;">fraction_AMAB_cohort</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.51269</td>
+<td style="text-align: right;">0.48731</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Other Considerations
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Here are a few other considerations I discussed with Eugene that were either important to think about for story purposes or were more complex to model &amp; thus dropped to keep things simple.</p>
+<ul>
+<li><p>Of critical importance: reproductive freedom and access to hormonal birth control would effectively mean that births in the GDS population might not be any different than births in the U.S. population as a whole. Would society change enough for these women that there would really be sufficient motivation and ability to have many more children than the norm? That’s left as an exercise for the writer.</p></li>
+<li><p>Birth rates really matter here. Below I model 50 years in the future where there is transmission and births from GDS, but at the same rate as the U.S. population as a whole. Over these 50 years, there are 215K births total in the U.S. GDS population. That brings the fraction of women up from 50% to… 50.03%. Yet there are 7.3 million people living with GDS. Clearly, transmission is a much more important factor than births over a timescale of only 50 years, unless birth rates are really different between these groups.</p></li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fl">0.02</span><span class="sc">/</span><span class="fl">0.005</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>r_GDS_increase <span class="ot">=</span> <span class="fl">0.02</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>P_GDS_start <span class="ot">=</span> <span class="dv">10000</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="ot">&lt;-</span> pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">r_GDS =</span> r_UN)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_GDS <span class="ot">&lt;-</span> <span class="fu">c</span>(P_GDS_start, <span class="fu">rep</span>(<span class="cn">NA</span>, <span class="dv">58</span>))</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="ot">&lt;-</span> pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">P_S =</span> P_UN_predicted <span class="sc">-</span> P_GDS)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_GDS_immigrants <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>pop_model_df<span class="sc">$</span>P_GDS_births <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>) {</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_GDS_immigrants[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">round</span>(pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span>T_HIV[i]<span class="sc">/</span><span class="dv">100</span> )</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_GDS_births[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">round</span>(pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span><span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_GDS[i]) <span class="sc">-</span> pop_model_df<span class="sc">$</span>P_GDS[i])</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_GDS[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> pop_model_df<span class="sc">$</span>P_GDS_immigrants[i <span class="sc">+</span> <span class="dv">1</span>] <span class="sc">+</span></span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    pop_model_df<span class="sc">$</span>P_GDS_births[i <span class="sc">+</span> <span class="dv">1</span>] <span class="sc">+</span> pop_model_df<span class="sc">$</span>P_GDS[i]</span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  pop_model_df<span class="sc">$</span>P_S[i <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> pop_model_df<span class="sc">$</span>P_S[i]<span class="sc">*</span><span class="fu">exp</span>(pop_model_df<span class="sc">$</span>r_UN[i]) <span class="sc">-</span> pop_model_df<span class="sc">$</span>P_GDS[i]<span class="sc">*</span>T_HIV[i]<span class="sc">/</span><span class="dv">100</span> </span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>pop_model_df <span class="sc">|&gt;</span> </span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replace_na</span>(<span class="fu">list</span>(<span class="at">P_GDS_births =</span> <span class="dv">0</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">P_BOTH =</span> P_S <span class="sc">+</span> P_GDS,</span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">fraction_I =</span> <span class="fu">round</span>(P_GDS <span class="sc">/</span> P_BOTH, <span class="at">digits =</span> <span class="dv">4</span>),</span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">Total_births =</span> <span class="fu">cumsum</span>(P_GDS_births)) <span class="sc">|&gt;</span> </span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="dv">2073</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Fraction_women =</span> <span class="fu">round</span>(((P_BOTH <span class="sc">-</span> Total_births) <span class="sc">/</span> <span class="dv">2</span> <span class="sc">+</span></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>                                   Total_births) <span class="sc">/</span> P_BOTH, <span class="at">digits =</span> <span class="dv">4</span>),</span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>         <span class="at">Difference =</span> ((P_BOTH <span class="sc">-</span> Total_births) <span class="sc">/</span> <span class="dv">2</span>  <span class="sc">+</span></span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>                                   Total_births )  <span class="sc">/</span> P_BOTH <span class="sc">-</span> </span>
+<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>           ((P_BOTH <span class="sc">-</span> Total_births) <span class="sc">/</span> <span class="dv">2</span> )  <span class="sc">/</span> P_BOTH)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 16
+   Year T_HIV   r_UN P_UN_predicted P_GDS_transmission_o…¹ P_S_transmission_only
+  &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;          &lt;dbl&gt;                  &lt;dbl&gt;                 &lt;dbl&gt;
+1  2073     5 0.0013     388477599.               6596083.            381881516.
+# ℹ abbreviated name: ¹​P_GDS_transmission_only
+# ℹ 10 more variables: r_GDS &lt;dbl&gt;, P_GDS &lt;dbl&gt;, P_S &lt;dbl&gt;, P_BOTH &lt;dbl&gt;,
+#   P_GDS_immigrants &lt;dbl&gt;, P_GDS_births &lt;dbl&gt;, fraction_I &lt;dbl&gt;,
+#   Total_births &lt;dbl&gt;, Fraction_women &lt;dbl&gt;, Difference &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<ul>
+<li><p>In the population with GDS, it may be better practice to model men &amp; women differently. Only women are born in this population. As the sex ratio of the population with GDS becomes more skewed, this could further increase the growth rate of that population.</p></li>
+<li><p>Immigration also effects on the population growth rate: early on, once GDS is known and there is the strongest reaction against it, people may try and limit immigration of people with GDS. The humanitarian aspect would run counter to that, if there were countries where femicides were happening and there were lots of people with GDS that were refugees.</p></li>
+<li><p>For the story, the demographic imbalance needs to be feel-able. 2 generations out, the U.S. is feeling the pressure of women being a demographic majority. It needs to feel like there are more women than men. But women don’t yet outnumber men to a degree that has overcome the historical imbalance in power between women and men.</p></li>
+<li><p>Plausibility: The demographic imbalance needs to be believable. 55% women 45% men - maybe. 60 - 40 - ok. 70/30 - really? There will be more societal factors countering that - places with access to hormonal birth control and the ability of women to choose when they are pregnant and how they get pregnant is significantly limited. For the story, in the 5% difference to 20% difference range, but those outcomes would feel very different.</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusions" class="level1">
+<h1>Conclusions</h1>
+<p>An <span class="math inline">\(r_{GDS}\)</span> of 2 - 2.7% probably has the most interesting science fictional implications. For these <span class="math inline">\(r_{GDS}\)</span> values, we have somewhere between 4 and 10 million girls born with GDS, which is enough to skew the sex ratio 1% to 2% overall. This effect is much more pronounced in younger age groups.</p>
+<ul>
+<li><p>With an r of 2.7%, ~4 births per woman, the difference is 1.8% (50.9% women) in 2073, and 7.4 million girls were born with GDS.</p></li>
+<li><p>With an r of 2.06%, ~3+ births per woman with GDS, the difference in the sex ratio is 1.1% (50.57% women), and 4.5 million girls were born with GDS. For people who are between 18 and 35 in 2073, the difference in the sex ratio is 2.5% (51.2% women), and for babies born in 2073, the difference in the sex ratio is a striking 30% (65% women).</p></li>
+</ul>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-haderxhanaj2014" class="csl-entry" role="listitem">
+Haderxhanaj, Laura T., Jami S. Leichliter, Sevgi O. Aral, and Harrell W. Chesson. 2014. <span>“Sex in a Lifetime.”</span> <em>Sexually Transmitted Diseases</em> 41 (6): 345–52. <a href="https://doi.org/10.1097/olq.0000000000000132">https://doi.org/10.1097/olq.0000000000000132</a>.
+</div>
+<div id="ref-holtgrave2009" class="csl-entry" role="listitem">
+Holtgrave, David R, H Irene Hall, Philip H Rhodes, and Richard J Wolitski. 2009. <span>“Updated Annual HIV Transmission Rates in the United States, 1977-2006.”</span> <em>JAIDS Journal of Acquired Immune Deficiency Syndromes</em> 50 (2): 236–38. <a href="https://doi.org/10.1097/qai.0b013e31819001be">https://doi.org/10.1097/qai.0b013e31819001be</a>.
+</div>
+</div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{macqueen2024,
+  author = {MacQueen, Alice},
+  title = {Modeling {US} {Population} {Growth} \&amp; {Demography} with a
+    {Novel} {Disease}},
+  date = {2024-04-04},
+  url = {https://alice-macqueen.github.io/posts/2024-04-04-GDS-population-model/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-macqueen2024" class="csl-entry quarto-appendix-citeas" role="listitem">
+MacQueen, Alice. 2024. <span>“Modeling US Population Growth &amp;
+Demography with a Novel Disease.”</span> April 4, 2024. <a href="https://alice-macqueen.github.io/posts/2024-04-04-GDS-population-model/">https://alice-macqueen.github.io/posts/2024-04-04-GDS-population-model/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
