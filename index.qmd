@@ -8,7 +8,7 @@ about:
   image-width: 20em
   links:
     - text: Portfolio
-      href: https://alice-macqueen.github.io
+      href: https://alice-macqueen.github.io/portfolio.html
     - text: LinkedIn
       href: https://www.linkedin.com/in/alice-macqueen-38a68461/
     - text: GitHub
@@ -19,6 +19,6 @@ about:
 
 ## Data Science Project Portfolio
 
-Alice MacQueen is a computational biologist with a Ph.D. from the University of Chicago and a background in quantitative population genetics, who focuses on identifying molecular variation to solve problems that impact human well-being.
+Alice MacQueen is a computational biologist with a Ph.D. from the University of Chicago and a background in quantitative population genetics. They focus on using molecular variation to solve problems that impact human well-being.
 
-Specifically, Alice uses R to solve problems and generate insight in agricultural and immunological sequencing data using linear mixed models, Bayesian multivariate adaptive shrinkage, and statistical association methods.
+Specifically, Alice uses R to solve problems and generate insight in genomic datasets, including agricultural diversity panels and human immunological sequencing data, using linear mixed models, Bayesian multivariate adaptive shrinkage, and statistical association methods.

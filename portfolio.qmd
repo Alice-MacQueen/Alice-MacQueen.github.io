@@ -14,7 +14,7 @@ page-layout: full
 title-block-banner: true
 ---
 
-This data science project portfolio showcases my work in data analysis, visualization, and machine learning.
+This data science project portfolio showcases Alice's work in data analysis, visualization, and modeling.
 
 ```{r include=FALSE}
 # This data science project portfolio is composed of [number of projects] projects covering the full spectrum of the data science process.

@@ -1,9 +1,18 @@
 ---
 title: "Resume"
+about: 
+  template: solana
+  links:
+    - text: Portfolio
+      href: https://alice-macqueen.github.io/portfolio.html
+    - text: Email
+      href: mailto:alice.macqueen@gmail.com
 ---
+
+## Alice's Resume
 
 <a href="Resume.pdf" class="download" title="Download Resume as PDF">Download Resume</a>			
 
-## Header
+Alice's Resume emphasizes their accomplishments as a computational biologist developing, using, and improving bioinformatic tools and open source software. 
 
-Say more about your Resume here.
+Please contact Alice via email if you're interested in her academic resume, or view their portfolio if you're interested in specific skills they have that could solve problems for your team.

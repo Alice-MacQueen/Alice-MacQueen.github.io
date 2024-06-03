@@ -4,7 +4,7 @@
     "href": "portfolio.html",
     "title": "Portfolio",
     "section": "",
-    "text": "This data science project portfolio showcases my work in data analysis, visualization, and machine learning.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVisualize Multiple Overlaps with UpSet\n\n\n\n\n\n\nR\n\n\ndata visualization\n\n\n\nVisualize the relationships between many sets using the ComplexUpset package on switchgrass flowering date data\n\n\n\n\n\nMay 20, 2024\n\n\nAlice MacQueen\n\n\n\n\n\n\n\n\n\n\n\n\nModeling US Population Growth & Demography with a Novel Disease\n\n\n\n\n\n\nR\n\n\nSIR\n\n\nlogistic growth model\n\n\n\nUsing Logistic Growth Models to model US Population Demographic Changes with a novel (fictional) disease\n\n\n\n\n\nApr 4, 2024\n\n\nAlice MacQueen\n\n\n\n\n\n\n\n\n\n\n\n\nCalculating narrow-sense heritability\n\n\n\n\n\n\nrrBLUP\n\n\nR\n\n\ntransform\n\n\nmodel\n\n\ndescriptive statistics\n\n\n\nEstimating the genetic component of yield using the rrBLUP package on switchgrass biomass data from a diversity panel\n\n\n\n\n\nApr 3, 2024\n\n\nAlice MacQueen\n\n\n\n\n\n\nNo matching items"
+    "text": "This data science project portfolio showcases Alice’s work in data analysis, visualization, and modeling.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVisualize Multiple Overlaps with UpSet\n\n\n\n\n\n\nR\n\n\ndata visualization\n\n\n\nVisualize the relationships between many sets using the ComplexUpset package on switchgrass flowering date data\n\n\n\n\n\nMay 20, 2024\n\n\nAlice MacQueen\n\n\n\n\n\n\n\n\n\n\n\n\nModeling US Population Growth & Demography with a Novel Disease\n\n\n\n\n\n\nR\n\n\nSIR\n\n\nlogistic growth model\n\n\n\nUsing Logistic Growth Models to model US Population Demographic Changes with a novel (fictional) disease\n\n\n\n\n\nApr 4, 2024\n\n\nAlice MacQueen\n\n\n\n\n\n\n\n\n\n\n\n\nCalculating narrow-sense heritability\n\n\n\n\n\n\nrrBLUP\n\n\nR\n\n\ntransform\n\n\nmodel\n\n\ndescriptive statistics\n\n\n\nEstimating the genetic component of yield using the rrBLUP package on switchgrass biomass data from a diversity panel\n\n\n\n\n\nApr 3, 2024\n\n\nAlice MacQueen\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "portfolio/2024-04-04-GDS-population-model/index.html",
@@ -39,28 +39,28 @@
     "href": "index.html",
     "title": "Alice MacQueen",
     "section": "",
-    "text": "Alice MacQueen is a computational biologist with a Ph.D. from the University of Chicago and a background in quantitative population genetics, who focuses on identifying molecular variation to solve problems that impact human well-being.\nSpecifically, Alice uses R to solve problems and generate insight in agricultural and immunological sequencing data using linear mixed models, Bayesian multivariate adaptive shrinkage, and statistical association methods."
+    "text": "Alice MacQueen is a computational biologist with a Ph.D. from the University of Chicago and a background in quantitative population genetics. They focus on using molecular variation to solve problems that impact human well-being.\nSpecifically, Alice uses R to solve problems and generate insight in genomic datasets, including agricultural diversity panels and human immunological sequencing data, using linear mixed models, Bayesian multivariate adaptive shrinkage, and statistical association methods."
   },
   {
     "objectID": "index.html#data-science-project-portfolio",
     "href": "index.html#data-science-project-portfolio",
     "title": "Alice MacQueen",
     "section": "",
-    "text": "Alice MacQueen is a computational biologist with a Ph.D. from the University of Chicago and a background in quantitative population genetics, who focuses on identifying molecular variation to solve problems that impact human well-being.\nSpecifically, Alice uses R to solve problems and generate insight in agricultural and immunological sequencing data using linear mixed models, Bayesian multivariate adaptive shrinkage, and statistical association methods."
+    "text": "Alice MacQueen is a computational biologist with a Ph.D. from the University of Chicago and a background in quantitative population genetics. They focus on using molecular variation to solve problems that impact human well-being.\nSpecifically, Alice uses R to solve problems and generate insight in genomic datasets, including agricultural diversity panels and human immunological sequencing data, using linear mixed models, Bayesian multivariate adaptive shrinkage, and statistical association methods."
   },
   {
     "objectID": "resume.html",
     "href": "resume.html",
     "title": "Resume",
     "section": "",
-    "text": "Download Resume"
+    "text": "Download Resume\nAlice’s Resume emphasizes their accomplishments as a computational biologist developing, using, and improving bioinformatic tools and open source software.\nPlease contact Alice via email if you’re interested in her academic resume, or view their portfolio if you’re interested in specific skills they have that could solve problems for your team."
   },
   {
-    "objectID": "resume.html#header",
-    "href": "resume.html#header",
+    "objectID": "resume.html#alices-resume",
+    "href": "resume.html#alices-resume",
     "title": "Resume",
-    "section": "Header",
-    "text": "Header\nSay more about your Resume here."
+    "section": "",
+    "text": "Download Resume\nAlice’s Resume emphasizes their accomplishments as a computational biologist developing, using, and improving bioinformatic tools and open source software.\nPlease contact Alice via email if you’re interested in her academic resume, or view their portfolio if you’re interested in specific skills they have that could solve problems for your team."
   },
   {
     "objectID": "portfolio/2024-05-20-upset/index.html",
