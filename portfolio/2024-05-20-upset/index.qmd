@@ -1,6 +1,6 @@
 ---
 title: "Visualize Multiple Overlaps with UpSet"
-description: "Visualize the relationships between many sets using the ComplexUpset package on movie data"
+description: "Visualize the relationships between many sets using the ComplexUpset package on switchgrass flowering date data"
 author:
   - name: Alice MacQueen
     url: https://alice-macqueen.github.io/
@@ -13,37 +13,125 @@ image: preview-image.png
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
-[UpSet plots](https://upset.app) are a great way to visualize overlaps between datasets with more than three and less than about 30 sets. You can think of these plots as a way to scale up the visualization of overlaps from a Venn diagram, which usually don't scale with clarity beyond three or four sets.
+[UpSet plots](https://upset.app) are a great way to visualize overlaps between datasets with more than three and less than about 30 sets. These plots are a clear way to scale up the visualization of overlaps from a Venn diagram, which usually don't scale with clarity beyond three or four sets.
 
-As such, UpSet plots are a great way to visualize overlaps between significant associations from multiple genome-wide associations (GWAS). These plots can visualize the genomic regions, or SNPs, that are significantly associated in one or more GWAS location, year, or trait. I use these plots as a preliminary visualization of overlaps between GWAS, where promising combinations of overlaps can be followed up with more detailed statistical analyses.
+As such, UpSet plots are a great way to visualize overlaps between significant associations from multiple genome-wide associations (GWAS). These plots can visualize the genomic regions, or SNPs, that are significantly associated in one or more GWAS location, year, or trait. I use these plots as a preliminary visualization of overlaps between GWAS. Then, promising combinations of overlaps can be followed up with more detailed statistical analyses.
 
 ```{r}
 # devtools::install_github("krassowski/complex-upset")
-# install.packages("ggplot2movies")
 library(ComplexUpset)
 library(tidyverse)
-library(ggplot2movies)
 ```
 
-Here, I am going to demonstrate the basics of making an Upset plot using the `movies` dataset from ggplot2. To keep the examples
+I am going to make an UpSet plot using genomic regions that have a significant effect on flowering time in switchgrass in at least one location. These genomic regions are ones I have been analyzing as part of a revision to [this paper](https://www.biorxiv.org/content/10.1101/2021.08.19.456975v1).
 
-## Dataset Preparation
+![Plants (colored shapes) & Locations (bold block circles with X's) used to get genetic effects on plant flowering date. Paper tl;dr: hundreds of switchgrass plants were collected from the locations of the colored shapes, cloned, and grown at eight common gardens where their flowering date was measured (gardens are bold black circles with X's).](images/Screenshot 2024-06-03 at 11.01.35 AM.png){#fig-map width="700"}
+
+First, I am going to load a supplementary dataset from the current revision of that paper.
 
 ```{r}
-movies <- as.data.frame(ggplot2movies::movies)
+#| include: false
+#| eval: false
 
-genres = colnames(movies)[18:24]
-genres
-movies[genres] = movies[genres] == 1
-
-movies[movies$mpaa == '', 'mpaa'] = NA
-movies <- na.omit(movies)
+effects <- read_csv(file = "~/Documents/Github/pvdiv-phenology-gxe/manuscript/revision2/SI_Appendix/Dataset_4_Gulf_reproductive_growth_date.csv")
+write_csv(effects, file = "Effects_dataset.csv")
 ```
 
-## ComplexUpset Plot
+::: {#dataset-info .callout-note collapse="true"}
+## Dataset Info
+
+The dataset loaded here is a dataframe of SNP effects on flowering date for the Gulf subpopulation of switchgrass (the pink points on @fig-map. In this dataset, the first two columns have the following definitions:
+
+-   Marker: The SNP marker in the format Chromosome_Position
+
+-   log10BF: log10(Bayes Factor) of the significance of the marker effect in the model jointly estimating SNP effects
+
+The remaining column names follow the pattern Effect\_\[Mean/StandardError/lfsr\]\_\[Subpopulation\]\_\[Phenotype\]\_\[Garden\], where Mean and Standard Error are estimates of the effect mean and standard error, lfsr is the local false sign rate statistic for the effect, and \[Subpopulation\], \[Phenotype\], and \[Garden\] follow the conventions of @fig-map.
+:::
 
 ```{r}
-p <- upset(movies, genres, name = "genre", width_ratio = 0.1)
-
-p + theme_classic()
+effects <- read_csv(file = "Effects_dataset.csv")
 ```
+
+Then, I will transform this dataset so that it is suitable for the Upset plot visualization. To do this, I need to add a set of new logical columns to the dataframe. Each column corresponds to one group in the Upset plot and the TRUE/FALSE value present in each row is the readout of whether that Marker is in that group.
+
+I want to plot SNPs with significant effects at more than one location. The 'lfsr' columns in this dataframe contain the p-values for the significance at each location. So I will create new columns based on the lfsr columns by transforming the continuous p-value into a logical vector, by assessing if each p-value is above or below a 5% threshold. I give each new column the abbreviation for the location's name as in @fig-map, as these names will appear in the Upset visualization.
+
+```{r}
+effects <- effects |> 
+  mutate(
+    TX1 = case_when(Effect_lfsr_Gulf_FloweringDate_TX1 <= 0.05 ~ TRUE,
+                        Effect_lfsr_Gulf_FloweringDate_TX1 > 0.05 ~ FALSE,
+                        TRUE ~ NA),
+    TX2 = case_when(Effect_lfsr_Gulf_FloweringDate_TX2 <= 0.05 ~ TRUE,
+                        Effect_lfsr_Gulf_FloweringDate_TX2 > 0.05 ~ FALSE,
+                        TRUE ~ NA),
+    TX3 = case_when(Effect_lfsr_Gulf_FloweringDate_TX3 <= 0.05 ~ TRUE,
+                        Effect_lfsr_Gulf_FloweringDate_TX3 > 0.05 ~ FALSE,
+                        TRUE ~ NA),
+    OK = case_when(Effect_lfsr_Gulf_FloweringDate_OK <= 0.05 ~ TRUE,
+                        Effect_lfsr_Gulf_FloweringDate_OK > 0.05 ~ FALSE,
+                        TRUE ~ NA),
+    MO = case_when(Effect_lfsr_Gulf_FloweringDate_MO <= 0.05 ~ TRUE,
+                        Effect_lfsr_Gulf_FloweringDate_MO > 0.05 ~ FALSE,
+                        TRUE ~ NA),
+    NE = case_when(Effect_lfsr_Gulf_FloweringDate_NE <= 0.05 ~ TRUE,
+                        Effect_lfsr_Gulf_FloweringDate_NE > 0.05 ~ FALSE,
+                        TRUE ~ NA),
+    MI = case_when(Effect_lfsr_Gulf_FloweringDate_MI <= 0.05 ~ TRUE,
+                        Effect_lfsr_Gulf_FloweringDate_MI > 0.05 ~ FALSE,
+                        TRUE ~ NA),
+    SD = case_when(Effect_lfsr_Gulf_FloweringDate_SD <= 0.05 ~ TRUE,
+                        Effect_lfsr_Gulf_FloweringDate_SD > 0.05 ~ FALSE,
+                        TRUE ~ NA),
+    .before = 3
+  )
+```
+
+Next, I define a vector of column names that correspond to the groups I want to include in the Upset plot.
+
+```{r}
+locations <- colnames(effects)[3:10]
+```
+
+Now I have the data in the right format for plotting, I make the Upset visualization, then iterate on it to improve it:
+
+```{r}
+p <- upset(effects, locations, name = "Locations", width_ratio = 0.1)
+
+p
+```
+
+This first visualization has many, many combinations of groups, most of which have very small numbers of significant effects. Let's make this plot easier to read by focusing on the groups with more effects, by setting the set size parameter `min_size = 50`:
+
+```{r}
+p <- upset(effects, locations, name = "Locations", width_ratio = 0.1, min_size = 50)
+
+p
+```
+
+By far the most common group is one where the effect is not significant at any location. These aren't interesting effects, so I remove this set from the visualization by filtering to include only sets with at least one member (by setting the set parameter `min_degree = 1)`:
+
+```{r}
+p <- upset(effects, locations, name = "Locations", width_ratio = 0.1, min_size = 50, min_degree = 1)
+
+p
+```
+
+The plot above is definitely an improvement. However, by default, Locations are sorted by set size, so locations with the largest number of significant effects - SD and MO - are at the top. Thinking back to @fig-map, the locations actually fall along a latitudinal gradient, so it would make more sense to retain this order for the locations in this plot. I adjust this by setting `sort_sets=FALSE`:
+
+```{r}
+p <- upset(effects, locations, name = "Locations", 
+           width_ratio = 0.1, min_size = 50, min_degree = 1, sort_sets = FALSE) +
+  ggtitle("Significant SNP Effects in Gulf plants for Flowering Date")
+
+p
+```
+
+To my eye, this Upset plot is clear enough for preliminary analysis. Several features of the data become apparent using this visualization:
+
+-   First, more SNP marker effects are significant at the northern locations than at the southern locations.
+
+-   There is a possible superset in this data, in that the northernmost four sites seem to have distinct sets of significant markers compared to the southern four locations. This is surprising because the plants I plot here all come from the southern part of the range of switchgrass (they are the pink shapes in @fig-map).
+
+-   There is also a sizeable group of markers that affect flowering date at most or all locations, though this group is smaller than the group of markers that affect flowering date at the northern locations.
