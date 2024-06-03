@@ -9,7 +9,7 @@ date: 2024-05-20
 categories: [R, data visualization] # self-defined categories
 citation: 
   url: https://alice-macqueen.github.io/posts/2024-05-20-upset/
-image: preview-image.png
+image: Upset_output.png
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 ---
 
@@ -25,7 +25,7 @@ library(tidyverse)
 
 I am going to make an UpSet plot using genomic regions that have a significant effect on flowering time in switchgrass in at least one location. These genomic regions are ones I have been analyzing as part of a revision to [this paper](https://www.biorxiv.org/content/10.1101/2021.08.19.456975v1).
 
-![Plants (colored shapes) & Locations (bold block circles with X's) used to get genetic effects on plant flowering date. Paper tl;dr: hundreds of switchgrass plants were collected from the locations of the colored shapes, cloned, and grown at eight common gardens where their flowering date was measured (gardens are bold black circles with X's).](images/Screenshot 2024-06-03 at 11.01.35 AM.png){#fig-map width="700"}
+![Plants (colored shapes) & Locations (bold block circles with X's) used to get genetic effects on plant flowering date. Paper tl;dr: hundreds of switchgrass plants were collected from the locations of the colored shapes, cloned, and grown at eight common gardens where their flowering date was measured (gardens are bold black circles with X's).](images/Switchgrass_map.png){#fig-map}
 
 First, I am going to load a supplementary dataset from the current revision of that paper.
 

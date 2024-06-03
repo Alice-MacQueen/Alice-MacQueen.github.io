@@ -9,7 +9,7 @@ date: 2024-04-04
 categories: [R, SIR, logistic growth model] # self-defined categories
 citation: 
   url: https://alice-macqueen.github.io/posts/2024-04-04-GDS-population-model/
-image: preview-image.png
+image: Model_output.png
 draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
 bibliography: references.bib
 ---
