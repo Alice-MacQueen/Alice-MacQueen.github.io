@@ -263,34 +263,50 @@ dbl (25): log10BF, Effect_Mean_Gulf_FloweringDate_TX1, Effect_StandardError_...
 <p>Then, I will transform this dataset so that it is suitable for the Upset plot visualization. To do this, I need to add a set of new logical columns to the dataframe. Each column corresponds to one group in the Upset plot and the TRUE/FALSE value present in each row is the readout of whether that Marker is in that group.</p>
 <p>I want to plot SNPs with significant effects at more than one location. The ‘lfsr’ columns in this dataframe contain the p-values for the significance at each location. So I will create new columns based on the lfsr columns by transforming the continuous p-value into a logical vector, by assessing if each p-value is above or below a 5% threshold. I give each new column the abbreviation for the location’s name as in <a href="#fig-map" class="quarto-xref">Figure&nbsp;1</a>, as these names will appear in the Upset visualization.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>effects <span class="ot">&lt;-</span> effects <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>effects <span class="ot">&lt;-</span> effects <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">TX1 =</span> <span class="fu">case_when</span>(Effect_lfsr_Gulf_FloweringDate_TX1 <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                        Effect_lfsr_Gulf_FloweringDate_TX1 <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">TX2 =</span> <span class="fu">case_when</span>(Effect_lfsr_Gulf_FloweringDate_TX2 <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                        Effect_lfsr_Gulf_FloweringDate_TX2 <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">TX3 =</span> <span class="fu">case_when</span>(Effect_lfsr_Gulf_FloweringDate_TX3 <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                        Effect_lfsr_Gulf_FloweringDate_TX3 <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">OK =</span> <span class="fu">case_when</span>(Effect_lfsr_Gulf_FloweringDate_OK <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>                        Effect_lfsr_Gulf_FloweringDate_OK <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">MO =</span> <span class="fu">case_when</span>(Effect_lfsr_Gulf_FloweringDate_MO <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>                        Effect_lfsr_Gulf_FloweringDate_MO <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">NE =</span> <span class="fu">case_when</span>(Effect_lfsr_Gulf_FloweringDate_NE <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>                        Effect_lfsr_Gulf_FloweringDate_NE <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">MI =</span> <span class="fu">case_when</span>(Effect_lfsr_Gulf_FloweringDate_MI <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                        Effect_lfsr_Gulf_FloweringDate_MI <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">case_when</span>(Effect_lfsr_Gulf_FloweringDate_SD <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>                        Effect_lfsr_Gulf_FloweringDate_SD <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>                        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span>),</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">.before =</span> <span class="dv">3</span></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">TX1 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_TX1 <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_TX1 <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">TX2 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_TX2 <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_TX2 <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">TX3 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_TX3 <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_TX3 <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">OK =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_OK <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_OK <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">MO =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_MO <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_MO <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">NE =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_NE <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_NE <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">MI =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_MI <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_MI <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD =</span> <span class="fu">case_when</span>(</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_SD <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>      Effect_lfsr_Gulf_FloweringDate_SD <span class="sc">&gt;</span> <span class="fl">0.05</span> <span class="sc">~</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">.before =</span> <span class="dv">3</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, I define a vector of column names that correspond to the groups I want to include in the Upset plot.</p>
 <div class="cell">
@@ -337,11 +353,13 @@ dbl (25): log10BF, Effect_Mean_Gulf_FloweringDate_TX1, Effect_StandardError_...
 </div>
 <p>The plot above is definitely an improvement. However, by default, Locations are sorted by set size, so locations with the largest number of significant effects - SD and MO - are at the top. Thinking back to <a href="#fig-map" class="quarto-xref">Figure&nbsp;1</a>, the locations actually fall along a latitudinal gradient, so it would make more sense to retain this order for the locations in this plot. I adjust this by setting <code>sort_sets=FALSE</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">upset</span>(effects, locations, <span class="at">name =</span> <span class="st">"Locations"</span>, </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">width_ratio =</span> <span class="fl">0.1</span>, <span class="at">min_size =</span> <span class="dv">50</span>, <span class="at">min_degree =</span> <span class="dv">1</span>, <span class="at">sort_sets =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Significant SNP Effects in Gulf plants for Flowering Date"</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">upset</span>(effects, locations,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"Locations"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">width_ratio =</span> <span class="fl">0.1</span>, <span class="at">min_size =</span> <span class="dv">50</span>, <span class="at">min_degree =</span> <span class="dv">1</span>, <span class="at">sort_sets =</span> <span class="cn">FALSE</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Significant SNP Effects in Gulf plants for Flowering Date"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

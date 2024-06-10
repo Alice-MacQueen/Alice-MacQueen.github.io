@@ -28,7 +28,7 @@ First, load the R packages I'll need to compute this statistic and load the kins
 
 ```{r}
 #| message: false
-#| 
+#|
 library(tidyverse)
 library(here)
 library(rrBLUP)
@@ -54,8 +54,8 @@ trait_data <- switchgrassGWAS::pvdiv_phenotypes
 To calculate narrow-sense heritability for one trait, `CLMB_BIOMASS`, I need to manipulate the trait dataframe so that the `PLANT_ID` included match the ones in the kinship matrix.
 
 ```{r}
-one_trait <- trait_data |> 
-  filter(!is.na(CLMB_BIOMASS)) |>  # <1>
+one_trait <- trait_data |>
+  filter(!is.na(CLMB_BIOMASS)) |> # <1>
   filter(PLANT_ID %in% colnames(k_full)) # <2>
 ```
 
@@ -73,7 +73,7 @@ Then, make sure that the PLANT_ID in the trait dataframe are in the same order a
 
 ```{r}
 k_order <- enframe(colnames(k_one), name = NULL, value = "PLANT_ID")
-one_trait <- k_order |> 
+one_trait <- k_order |>
   left_join(one_trait, by = "PLANT_ID")
 ```
 
@@ -86,10 +86,9 @@ all.equal(k_order, select(one_trait, PLANT_ID))
 Now, we used mixed.solve() from the rrBLUP package to calculate both the additive genetic variation (Vu) and the error variation in the trait (Ve). Added together, Vu and Ve make up the total trait variation in the population.
 
 ```{r}
-
 mod2 <- mixed.solve(y = one_trait$CLMB_BIOMASS, K = k_one)
 
-h2 <- mod2$Vu/(mod2$Vu + mod2$Ve)
+h2 <- mod2$Vu / (mod2$Vu + mod2$Ve)
 
 round(h2, digits = 4)
 ```
@@ -101,26 +100,26 @@ h^2^ for the biomass at CLMB is `r round(h2, digits = 4)`. This is a very high h
 #| eval: false
 
 # mixed.solve example
-#random population of 200 lines with 1000 markers
-M <- matrix(rep(0,200*1000),200,1000)
+# random population of 200 lines with 1000 markers
+M <- matrix(rep(0, 200 * 1000), 200, 1000)
 for (i in 1:200) {
-  M[i,] <- ifelse(runif(1000)<0.5,-1,1)
+  M[i, ] <- ifelse(runif(1000) < 0.5, -1, 1)
 }
 
-#random phenotypes
+# random phenotypes
 u <- rnorm(1000)
-g <- as.vector(crossprod(t(M),u))
-h2 <- 0.5  #heritability
-y <- g + rnorm(200,mean=0,sd=sqrt((1-h2)/h2*var(g)))
+g <- as.vector(crossprod(t(M), u))
+h2 <- 0.5 # heritability
+y <- g + rnorm(200, mean = 0, sd = sqrt((1 - h2) / h2 * var(g)))
 
-#predict marker effects
-ans <- mixed.solve(y,Z=M)  #By default K = I
-accuracy <- cor(u,ans$u)
-h2 <- ans$Vu/(ans$Vu + ans$Ve)
+# predict marker effects
+ans <- mixed.solve(y, Z = M) # By default K = I
+accuracy <- cor(u, ans$u)
+h2 <- ans$Vu / (ans$Vu + ans$Ve)
 
-#predict breeding values
-ans <- mixed.solve(y,K=A.mat(M))
-accuracy <- cor(g,ans$u)
+# predict breeding values
+ans <- mixed.solve(y, K = A.mat(M))
+accuracy <- cor(g, ans$u)
 
-h2 <- ans$Vu/(ans$Vu + ans$Ve)
+h2 <- ans$Vu / (ans$Vu + ans$Ve)
 ```

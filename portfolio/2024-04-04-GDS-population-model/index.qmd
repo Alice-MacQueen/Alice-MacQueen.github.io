@@ -85,7 +85,7 @@ library(knitr)
 ```
 
 ```{r}
-r_UN <- c(0.53, 0.52, 0.51, 0.50, 0.49, 0.48, 0.48, 0.47, 0.45, 0.44, 0.43, 0.41, 0.40, 0.38, 0.36, 0.35, 0.33, 0.31, 0.29, 0.28, 0.26, 0.24, 0.23, 0.21, 0.20, 0.18, 0.17, 0.16, 0.15, 0.15, 0.14, 0.14, 0.14, 0.14, 0.14, 0.14, 0.15, 0.15, 0.15, 0.15, 0.16, 0.16, 0.16, 0.16, 0.16, 0.15, 0.15, 0.15, 0.14, 0.14, 0.13, 0.12, 0.11, 0.1, 0.09, 0.08, 0.07, 0.07, 0.06)/100
+r_UN <- c(0.53, 0.52, 0.51, 0.50, 0.49, 0.48, 0.48, 0.47, 0.45, 0.44, 0.43, 0.41, 0.40, 0.38, 0.36, 0.35, 0.33, 0.31, 0.29, 0.28, 0.26, 0.24, 0.23, 0.21, 0.20, 0.18, 0.17, 0.16, 0.15, 0.15, 0.14, 0.14, 0.14, 0.14, 0.14, 0.14, 0.15, 0.15, 0.15, 0.15, 0.16, 0.16, 0.16, 0.16, 0.16, 0.15, 0.15, 0.15, 0.14, 0.14, 0.13, 0.12, 0.11, 0.1, 0.09, 0.08, 0.07, 0.07, 0.06) / 100
 T_HIV <- c(100.4, 50.4, 33.7, 92.3, 48.3, 61.6, 38.6, 44.4, 31.4, 17.4, 15.3, 13.7, 12.6, 11.7, 6.6, 6.6, 6.6, 6.6, 6.6, 6.5, 7.5, 7.1, 6.8, 6.2, 5.9, 5.7, 5.5, 5.3, 5.2, 5.0, rep(5.0, 29))
 Year <- c(2023:2081)
 pop_model_df <- tibble(Year = Year, T_HIV = T_HIV, r_UN = r_UN)
@@ -108,13 +108,13 @@ As a quick model spot-check, I took the US population in 2023 (339 million), the
 First, the model with a carrying capacity parameter, K:
 
 ```{r}
-K <- 400000000 
+K <- 400000000
 P_2023 <- 339996563
 
 pop_model_df$P_0 <- c(P_2023, rep(NA, 58))
 
 # 2024 population
-K*pop_model_df$P_0[1]*exp(pop_model_df$r_UN[1]) / (K + pop_model_df$P_0[1]*(exp(pop_model_df$r_UN[1]) - 1))
+K * pop_model_df$P_0[1] * exp(pop_model_df$r_UN[1]) / (K + pop_model_df$P_0[1] * (exp(pop_model_df$r_UN[1]) - 1))
 ```
 
 This model accounts for carrying capacity but curbs growth too strongly to be realistic for our provided population data - the population is 340.2 million, too low by 1.6 million individuals.
@@ -122,9 +122,7 @@ This model accounts for carrying capacity but curbs growth too strongly to be re
 Here, instead, is a basic logistic growth model, without carrying capacity:
 
 ```{r}
-
-pop_model_df$P_0[1]*exp(pop_model_df$r_UN[1])
-
+pop_model_df$P_0[1] * exp(pop_model_df$r_UN[1])
 ```
 
 A basic logistic growth model without carrying capacity recreates the provided population data for 2024, given the r that was provided. So the empirical data has carrying capacity 'baked in' to the provided population growth rates.
@@ -133,8 +131,8 @@ Last, I checked that I could accurately capture the UN's future predictions with
 
 ```{r}
 for (i in 1:50) {
-  pop_model_df$P_0[i + 1] <- 
-    pop_model_df$P_0[i]*exp(pop_model_df$r_UN[i])
+  pop_model_df$P_0[i + 1] <-
+    pop_model_df$P_0[i] * exp(pop_model_df$r_UN[i])
 }
 
 head(pop_model_df) |> kable()
@@ -148,21 +146,21 @@ Once I was confident in the model, I added a layer of complexity. There are now 
 
 ```{r}
 pop_model_df$P_GDS <- c(10000, rep(NA, 58))
-pop_model_df <- pop_model_df |> 
+pop_model_df <- pop_model_df |>
   mutate(P_S = P_0 - P_GDS)
 
-i = 1
+i <- 1
 
 for (i in 1:50) {
-  pop_model_df$P_GDS[i + 1] <- pop_model_df$P_GDS[i]*T_HIV[i]/100 +
+  pop_model_df$P_GDS[i + 1] <- pop_model_df$P_GDS[i] * T_HIV[i] / 100 +
     pop_model_df$P_GDS[i]
   pop_model_df$P_S[i + 1] <- pop_model_df$P_0[i + 1] -
     pop_model_df$P_GDS[i + 1]
 }
 
-pop_model_df |> 
-  mutate(fraction_I = round(P_GDS / P_0, digits = 4)) |> 
-  filter(Year == 2073) |> 
+pop_model_df |>
+  mutate(fraction_I = round(P_GDS / P_0, digits = 4)) |>
+  filter(Year == 2073) |>
   kable()
 ```
 
@@ -175,16 +173,20 @@ Now I modeled births in each population separately, which means I set two popula
 I initialized the model in 2023 with a starting $P_{GDS}$ of 10,000 individuals, and create a new $r_{GDS}$ variable.
 
 ```{r}
-pop_model_df <- pop_model_df |> 
-  mutate(r_GDS = r_UN * 2) |> 
-  rename(P_UN_predicted = P_0, P_GDS_transmission_only = P_GDS,
-         P_S_transmission_only = P_S) # <1>
+pop_model_df <- pop_model_df |>
+  mutate(r_GDS = r_UN * 2) |>
+  rename(
+    P_UN_predicted = P_0, P_GDS_transmission_only = P_GDS,
+    P_S_transmission_only = P_S
+  ) # <1>
 pop_model_df$P_GDS <- c(10000, rep(NA, 58))
-pop_model_df <- pop_model_df |> 
-  mutate(P_S = P_UN_predicted - P_GDS,
-         P_BOTH = P_S + P_GDS)
+pop_model_df <- pop_model_df |>
+  mutate(
+    P_S = P_UN_predicted - P_GDS,
+    P_BOTH = P_S + P_GDS
+  )
 
-head(pop_model_df, n = 3) |> 
+head(pop_model_df, n = 3) |>
   kable()
 ```
 
@@ -193,17 +195,17 @@ head(pop_model_df, n = 3) |>
 Here, I ran the model for 50 years, then looked at some population demographic parameters in 2073, 50 years later.
 
 ```{r}
-
 for (i in 1:50) {
-  pop_model_df$P_GDS[i + 1] <- pop_model_df$P_GDS[i]*exp(pop_model_df$r_GDS[i]) + pop_model_df$P_GDS[i]*T_HIV[i]/100 
-  pop_model_df$P_S[i + 1] <- pop_model_df$P_S[i]*exp(pop_model_df$r_UN[i]) - pop_model_df$P_GDS[i]*T_HIV[i]/100 
-  
+  pop_model_df$P_GDS[i + 1] <- pop_model_df$P_GDS[i] * exp(pop_model_df$r_GDS[i]) + pop_model_df$P_GDS[i] * T_HIV[i] / 100
+  pop_model_df$P_S[i + 1] <- pop_model_df$P_S[i] * exp(pop_model_df$r_UN[i]) - pop_model_df$P_GDS[i] * T_HIV[i] / 100
 }
 
-pop_model_df |> 
-  mutate(P_BOTH = P_S + P_GDS,
-         fraction_I = round(P_GDS / P_BOTH, digits = 4)) |> 
-  filter(Year == 2073) |> 
+pop_model_df |>
+  mutate(
+    P_BOTH = P_S + P_GDS,
+    fraction_I = round(P_GDS / P_BOTH, digits = 4)
+  ) |>
+  filter(Year == 2073) |>
   kable()
 ```
 
@@ -219,32 +221,33 @@ Here I implement a model where people who received GDS via transmission and birt
 
 ```{r}
 # 0.0639/0.005
-r_GDS_increase = 0.0639
-P_GDS_start = 10000
+r_GDS_increase <- 0.0639
+P_GDS_start <- 10000
 
-pop_model_df <- pop_model_df |> 
+pop_model_df <- pop_model_df |>
   mutate(r_GDS = r_GDS_increase)
 pop_model_df$P_GDS <- c(P_GDS_start, rep(NA, 58))
-pop_model_df <- pop_model_df |> 
+pop_model_df <- pop_model_df |>
   mutate(P_S = P_UN_predicted - P_GDS)
 pop_model_df$P_GDS_immigrants <- NA
 pop_model_df$P_GDS_births <- NA
 
 for (i in 1:50) {
-  pop_model_df$P_GDS_immigrants[i + 1] <- round(pop_model_df$P_GDS[i]*T_HIV[i]/100 )
-  pop_model_df$P_GDS_births[i + 1] <- round(pop_model_df$P_GDS[i]*exp(pop_model_df$r_GDS[i]) - pop_model_df$P_GDS[i])
+  pop_model_df$P_GDS_immigrants[i + 1] <- round(pop_model_df$P_GDS[i] * T_HIV[i] / 100)
+  pop_model_df$P_GDS_births[i + 1] <- round(pop_model_df$P_GDS[i] * exp(pop_model_df$r_GDS[i]) - pop_model_df$P_GDS[i])
   pop_model_df$P_GDS[i + 1] <- pop_model_df$P_GDS_immigrants[i + 1] +
     pop_model_df$P_GDS_births[i + 1] + pop_model_df$P_GDS[i]
-  pop_model_df$P_S[i + 1] <- pop_model_df$P_S[i]*exp(pop_model_df$r_UN[i]) - pop_model_df$P_GDS[i]*T_HIV[i]/100 
-  
+  pop_model_df$P_S[i + 1] <- pop_model_df$P_S[i] * exp(pop_model_df$r_UN[i]) - pop_model_df$P_GDS[i] * T_HIV[i] / 100
 }
 
-pop_model_df |> 
-  mutate(P_BOTH = P_S + P_GDS,
-         fraction_I = round(P_GDS / P_BOTH, digits = 4)) |> 
+pop_model_df |>
+  mutate(
+    P_BOTH = P_S + P_GDS,
+    fraction_I = round(P_GDS / P_BOTH, digits = 4)
+  ) |>
   summarise(P_GDS_births = sum(P_GDS_births, na.rm = TRUE))
 
-16922855/404976064
+16922855 / 404976064
 ```
 
 At 8x higher a rate than the 2024 rate, there are 39M people with GDS in the US, 10% of the population. However, an r of 0.04 (4%) is very high; if that was by country, [it'd be the third highest in the world](https://en.wikipedia.org/wiki/List_of_countries_by_population_growth_rate).
@@ -258,96 +261,99 @@ I wasn't able to quickly work out the conversion used between number of children
 The baby boom in the U.S. was a clear candidate - between 1950 and 1965, the fertility rate was between 3.0 and 3.6, and the birth rate was 24.26 dropping to 20.34 in this period. In Kenya in 2024, the fertility rate is 3.21 births per woman, and there are 27.071 births per 1000 women. In 2012, when the fertility rate was 4.178 births per women, the birth rate was 33.717. The current birth rate in the US is 12.009 births per 1000 women. That gave me a range for $r_{GDS}$ of up to 0.0273 that seemed reasonable for a modern-day baby boom, which is about 5x the current growth rate in the U.S.
 
 ```{r}
-#| 
-(12.009+2.768-9.226)/1000 # calculate Current U.S. r from births, deaths, immigration - this is approximately the correct rate for 2024
-(33.717+2.768-9.226)/1000. # Kenya 2012 birth rate, fertility rate 4.178
-(27.071+2.768-9.226)/1000. # Kenya 2024 birth rate, fertility rate 3.214
-(24.268+2.768-9.226)/1000  # US 1950 birth rate, fertility rate 3.148
-0.0273/0.0053
+#|
+(12.009 + 2.768 - 9.226) / 1000 # calculate Current U.S. r from births, deaths, immigration - this is approximately the correct rate for 2024
+(33.717 + 2.768 - 9.226) / 1000. # Kenya 2012 birth rate, fertility rate 4.178
+(27.071 + 2.768 - 9.226) / 1000. # Kenya 2024 birth rate, fertility rate 3.214
+(24.268 + 2.768 - 9.226) / 1000 # US 1950 birth rate, fertility rate 3.148
+0.0273 / 0.0053
 ```
 
 To model all of these growth rates, I made a function to calculate the outcome in a dataframe (so we don't copy and paste code any further).
 
 ```{r}
-get_GDS_model <- function(df, r_GDS = 0.02, P_GDS_start = 10000, 
+get_GDS_model <- function(df, r_GDS = 0.02, P_GDS_start = 10000,
                           N_year = 50) {
-  df <- df |> 
+  df <- df |>
     mutate(r_GDS = r_GDS)
   df$P_GDS <- c(P_GDS_start, rep(NA, nrow(df) - 1))
-  df <- df |> 
+  df <- df |>
     mutate(P_S = P_UN_predicted - P_GDS)
   df$P_GDS_immigrants <- NA
   df$P_GDS_births <- NA
   df$P_S_births <- NA
-  
+
   for (i in 1:N_year) {
-    df$P_GDS_immigrants[i + 1] <- 
-      round(df$P_GDS[i]*T_HIV[i]/100 )
-    df$P_GDS_births[i + 1] <- 
-      round(df$P_GDS[i]*exp(df$r_GDS[i]) -
-              df$P_GDS[i])
+    df$P_GDS_immigrants[i + 1] <-
+      round(df$P_GDS[i] * T_HIV[i] / 100)
+    df$P_GDS_births[i + 1] <-
+      round(df$P_GDS[i] * exp(df$r_GDS[i]) -
+        df$P_GDS[i])
     df$P_GDS[i + 1] <- df$P_GDS_immigrants[i + 1] +
       df$P_GDS_births[i + 1] + df$P_GDS[i]
-    df$P_S_births[i + 1] <- 
-      df$P_S[i]*exp(df$r_UN[i]) -
+    df$P_S_births[i + 1] <-
+      df$P_S[i] * exp(df$r_UN[i]) -
       df$P_S[i]
-    df$P_S[i + 1] <- 
-      df$P_S[i]*exp(df$r_UN[i]) -
-      df$P_GDS[i]*T_HIV[i]/100 
-    
+    df$P_S[i + 1] <-
+      df$P_S[i] * exp(df$r_UN[i]) -
+      df$P_GDS[i] * T_HIV[i] / 100
   }
-  df <- df |> 
-    replace_na(list(P_GDS_births = 0, P_S_births = 0, 
-                    P_GDS_immigrants = 0)) |> 
-    mutate(P_BOTH = P_S + P_GDS,
-           fraction_I = round(P_GDS / P_BOTH, digits = 4),
-           fraction_AFAB = (P_S_births*(100/205) + P_GDS_births) / 
-             (P_GDS_births + P_S_births),
-           fraction_AMAB = (P_S_births*(105/205)) / 
-             (P_GDS_births + P_S_births),
-           Total_I_births = cumsum(P_GDS_births),
-           Total_S_births = cumsum(P_S_births))
+  df <- df |>
+    replace_na(list(
+      P_GDS_births = 0, P_S_births = 0,
+      P_GDS_immigrants = 0
+    )) |>
+    mutate(
+      P_BOTH = P_S + P_GDS,
+      fraction_I = round(P_GDS / P_BOTH, digits = 4),
+      fraction_AFAB = (P_S_births * (100 / 205) + P_GDS_births) /
+        (P_GDS_births + P_S_births),
+      fraction_AMAB = (P_S_births * (105 / 205)) /
+        (P_GDS_births + P_S_births),
+      Total_I_births = cumsum(P_GDS_births),
+      Total_S_births = cumsum(P_S_births)
+    )
   return(df)
 }
-
 ```
 
 ```{r}
 #| include: false
-0.02/0.005
-r_GDS_increase = 0.0178
-P_GDS_start = 10000
+0.02 / 0.005
+r_GDS_increase <- 0.0178
+P_GDS_start <- 10000
 
-pop_model_df <- pop_model_df |> 
+pop_model_df <- pop_model_df |>
   mutate(r_GDS = r_GDS_increase)
 pop_model_df$P_GDS <- c(P_GDS_start, rep(NA, 58))
-pop_model_df <- pop_model_df |> 
+pop_model_df <- pop_model_df |>
   mutate(P_S = P_UN_predicted - P_GDS)
 pop_model_df$P_GDS_immigrants <- NA
 pop_model_df$P_GDS_births <- NA
 
 for (i in 1:50) {
-  pop_model_df$P_GDS_immigrants[i + 1] <- round(pop_model_df$P_GDS[i]*T_HIV[i]/100 )
-  pop_model_df$P_GDS_births[i + 1] <- round(pop_model_df$P_GDS[i]*exp(pop_model_df$r_GDS[i]) - pop_model_df$P_GDS[i])
+  pop_model_df$P_GDS_immigrants[i + 1] <- round(pop_model_df$P_GDS[i] * T_HIV[i] / 100)
+  pop_model_df$P_GDS_births[i + 1] <- round(pop_model_df$P_GDS[i] * exp(pop_model_df$r_GDS[i]) - pop_model_df$P_GDS[i])
   pop_model_df$P_GDS[i + 1] <- pop_model_df$P_GDS_immigrants[i + 1] +
     pop_model_df$P_GDS_births[i + 1] + pop_model_df$P_GDS[i]
-  pop_model_df$P_S[i + 1] <- pop_model_df$P_S[i]*exp(pop_model_df$r_UN[i]) - pop_model_df$P_GDS[i]*T_HIV[i]/100 
-  
+  pop_model_df$P_S[i + 1] <- pop_model_df$P_S[i] * exp(pop_model_df$r_UN[i]) - pop_model_df$P_GDS[i] * T_HIV[i] / 100
 }
 
-pop_model_df |> 
-  replace_na(list(P_GDS_births = 0)) |> 
-  mutate(P_BOTH = P_S + P_GDS,
-         fraction_I = round(P_GDS / P_BOTH, digits = 4),
-         Total_births = cumsum(P_GDS_births)) |> 
-  filter(Year == 2073) |> 
-  mutate(Fraction_women = round(((P_BOTH - Total_births) / 2 +
-                                   Total_births) / P_BOTH, digits = 4),
-         Difference = ((P_BOTH - Total_births) / 2  +
-                                   Total_births )  / P_BOTH - 
-           ((P_BOTH - Total_births) / 2 )  / P_BOTH)
-
-
+pop_model_df |>
+  replace_na(list(P_GDS_births = 0)) |>
+  mutate(
+    P_BOTH = P_S + P_GDS,
+    fraction_I = round(P_GDS / P_BOTH, digits = 4),
+    Total_births = cumsum(P_GDS_births)
+  ) |>
+  filter(Year == 2073) |>
+  mutate(
+    Fraction_women = round(((P_BOTH - Total_births) / 2 +
+      Total_births) / P_BOTH, digits = 4),
+    Difference = ((P_BOTH - Total_births) / 2 +
+      Total_births) / P_BOTH -
+      ((P_BOTH - Total_births) / 2) / P_BOTH
+  )
 ```
 
 -   With an r of 2.7%, \~4 births per woman, the difference is 1.8% (50.9% women) in 2073, and 7.4 million girls were born with GDS.
@@ -370,52 +376,55 @@ I looked at the fraction of babies born AFAB in 2073 in a model with $r_{GDS}$ o
 
 ```{r}
 #| warning: false
-pop_df <- get_GDS_model(pop_model_df, r_GDS = 0.0206) 
+pop_df <- get_GDS_model(pop_model_df, r_GDS = 0.0206)
 
-pop_df |> 
-  filter(Year == 2073) |> 
-  select(fraction_I:fraction_AMAB) |> 
+pop_df |>
+  filter(Year == 2073) |>
+  select(fraction_I:fraction_AMAB) |>
   kable()
 
-pop_df |> 
+pop_df |>
   ggplot(aes(x = Year, y = fraction_AMAB)) +
   geom_line() +
   ylim(c(0.3, 0.51)) +
   labs(y = "Fraction Male Babies")
-  
 ```
 
 Then, I summed up the number of people of both sexes who would be between 18 and 35 years old in 2073.
 
 ```{r}
-pop_df |> 
-  filter(between(Year, 2038, 2055)) |> 
-  mutate(Total_I_cohort = cumsum(P_GDS_births),
-         Total_S_cohort = cumsum(P_S_births),
-         fraction_AFAB_cohort = (Total_S_cohort*(100/205) + Total_I_cohort) / 
-             (Total_I_cohort + Total_S_cohort),
-           fraction_AMAB_cohort = (Total_S_cohort*(105/205)) / 
-             (Total_I_cohort + Total_S_cohort)) |> 
-  filter(Year == 2055) |> 
-  select(fraction_AFAB_cohort:fraction_AMAB_cohort) |> kable()
-
+pop_df |>
+  filter(between(Year, 2038, 2055)) |>
+  mutate(
+    Total_I_cohort = cumsum(P_GDS_births),
+    Total_S_cohort = cumsum(P_S_births),
+    fraction_AFAB_cohort = (Total_S_cohort * (100 / 205) + Total_I_cohort) /
+      (Total_I_cohort + Total_S_cohort),
+    fraction_AMAB_cohort = (Total_S_cohort * (105 / 205)) /
+      (Total_I_cohort + Total_S_cohort)
+  ) |>
+  filter(Year == 2055) |>
+  select(fraction_AFAB_cohort:fraction_AMAB_cohort) |>
+  kable()
 ```
 
 ```{r}
 #| include: false
 #| eval: false
 
-pop_df |> 
-  filter(between(Year, 2048, 2055)) |> 
-  mutate(Total_I_cohort = cumsum(P_GDS_births),
-         Total_S_cohort = cumsum(P_S_births),
-         fraction_AFAB_cohort = (Total_S_cohort*(100/205) + Total_I_cohort) / 
-             (Total_I_cohort + Total_S_cohort),
-           fraction_AMAB_cohort = (Total_S_cohort*(105/205)) / 
-             (Total_I_cohort + Total_S_cohort)) |> 
-  filter(Year == 2055) |> 
-  select(fraction_I:fraction_AMAB_cohort) |> kable()
-
+pop_df |>
+  filter(between(Year, 2048, 2055)) |>
+  mutate(
+    Total_I_cohort = cumsum(P_GDS_births),
+    Total_S_cohort = cumsum(P_S_births),
+    fraction_AFAB_cohort = (Total_S_cohort * (100 / 205) + Total_I_cohort) /
+      (Total_I_cohort + Total_S_cohort),
+    fraction_AMAB_cohort = (Total_S_cohort * (105 / 205)) /
+      (Total_I_cohort + Total_S_cohort)
+  ) |>
+  filter(Year == 2055) |>
+  select(fraction_I:fraction_AMAB_cohort) |>
+  kable()
 ```
 
 ::: {.callout-note collapse="true"}
@@ -428,39 +437,41 @@ Here are a few other considerations I discussed with Eugene that were either imp
 -   Birth rates really matter here. Below I model 50 years in the future where there is transmission and births from GDS, but at the same rate as the U.S. population as a whole. Over these 50 years, there are 215K births total in the U.S. GDS population. That brings the fraction of women up from 50% to... 50.03%. Yet there are 7.3 million people living with GDS. Clearly, transmission is a much more important factor than births over a timescale of only 50 years, unless birth rates are really different between these groups.
 
 ```{r}
-0.02/0.005
-r_GDS_increase = 0.02
-P_GDS_start = 10000
+0.02 / 0.005
+r_GDS_increase <- 0.02
+P_GDS_start <- 10000
 
-pop_model_df <- pop_model_df |> 
+pop_model_df <- pop_model_df |>
   mutate(r_GDS = r_UN)
 pop_model_df$P_GDS <- c(P_GDS_start, rep(NA, 58))
-pop_model_df <- pop_model_df |> 
+pop_model_df <- pop_model_df |>
   mutate(P_S = P_UN_predicted - P_GDS)
 pop_model_df$P_GDS_immigrants <- NA
 pop_model_df$P_GDS_births <- NA
 
 for (i in 1:50) {
-  pop_model_df$P_GDS_immigrants[i + 1] <- round(pop_model_df$P_GDS[i]*T_HIV[i]/100 )
-  pop_model_df$P_GDS_births[i + 1] <- round(pop_model_df$P_GDS[i]*exp(pop_model_df$r_GDS[i]) - pop_model_df$P_GDS[i])
+  pop_model_df$P_GDS_immigrants[i + 1] <- round(pop_model_df$P_GDS[i] * T_HIV[i] / 100)
+  pop_model_df$P_GDS_births[i + 1] <- round(pop_model_df$P_GDS[i] * exp(pop_model_df$r_GDS[i]) - pop_model_df$P_GDS[i])
   pop_model_df$P_GDS[i + 1] <- pop_model_df$P_GDS_immigrants[i + 1] +
     pop_model_df$P_GDS_births[i + 1] + pop_model_df$P_GDS[i]
-  pop_model_df$P_S[i + 1] <- pop_model_df$P_S[i]*exp(pop_model_df$r_UN[i]) - pop_model_df$P_GDS[i]*T_HIV[i]/100 
-  
+  pop_model_df$P_S[i + 1] <- pop_model_df$P_S[i] * exp(pop_model_df$r_UN[i]) - pop_model_df$P_GDS[i] * T_HIV[i] / 100
 }
 
-pop_model_df |> 
-  replace_na(list(P_GDS_births = 0)) |> 
-  mutate(P_BOTH = P_S + P_GDS,
-         fraction_I = round(P_GDS / P_BOTH, digits = 4),
-         Total_births = cumsum(P_GDS_births)) |> 
-  filter(Year == 2073) |> 
-  mutate(Fraction_women = round(((P_BOTH - Total_births) / 2 +
-                                   Total_births) / P_BOTH, digits = 4),
-         Difference = ((P_BOTH - Total_births) / 2  +
-                                   Total_births )  / P_BOTH - 
-           ((P_BOTH - Total_births) / 2 )  / P_BOTH)
-
+pop_model_df |>
+  replace_na(list(P_GDS_births = 0)) |>
+  mutate(
+    P_BOTH = P_S + P_GDS,
+    fraction_I = round(P_GDS / P_BOTH, digits = 4),
+    Total_births = cumsum(P_GDS_births)
+  ) |>
+  filter(Year == 2073) |>
+  mutate(
+    Fraction_women = round(((P_BOTH - Total_births) / 2 +
+      Total_births) / P_BOTH, digits = 4),
+    Difference = ((P_BOTH - Total_births) / 2 +
+      Total_births) / P_BOTH -
+      ((P_BOTH - Total_births) / 2) / P_BOTH
+  )
 ```
 
 -   In the population with GDS, it may be better practice to model men & women differently. Only women are born in this population. As the sex ratio of the population with GDS becomes more skewed, this could further increase the growth rate of that population.

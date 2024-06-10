@@ -58,32 +58,48 @@ Then, I will transform this dataset so that it is suitable for the Upset plot vi
 I want to plot SNPs with significant effects at more than one location. The 'lfsr' columns in this dataframe contain the p-values for the significance at each location. So I will create new columns based on the lfsr columns by transforming the continuous p-value into a logical vector, by assessing if each p-value is above or below a 5% threshold. I give each new column the abbreviation for the location's name as in @fig-map, as these names will appear in the Upset visualization.
 
 ```{r}
-effects <- effects |> 
+effects <- effects |>
   mutate(
-    TX1 = case_when(Effect_lfsr_Gulf_FloweringDate_TX1 <= 0.05 ~ TRUE,
-                        Effect_lfsr_Gulf_FloweringDate_TX1 > 0.05 ~ FALSE,
-                        TRUE ~ NA),
-    TX2 = case_when(Effect_lfsr_Gulf_FloweringDate_TX2 <= 0.05 ~ TRUE,
-                        Effect_lfsr_Gulf_FloweringDate_TX2 > 0.05 ~ FALSE,
-                        TRUE ~ NA),
-    TX3 = case_when(Effect_lfsr_Gulf_FloweringDate_TX3 <= 0.05 ~ TRUE,
-                        Effect_lfsr_Gulf_FloweringDate_TX3 > 0.05 ~ FALSE,
-                        TRUE ~ NA),
-    OK = case_when(Effect_lfsr_Gulf_FloweringDate_OK <= 0.05 ~ TRUE,
-                        Effect_lfsr_Gulf_FloweringDate_OK > 0.05 ~ FALSE,
-                        TRUE ~ NA),
-    MO = case_when(Effect_lfsr_Gulf_FloweringDate_MO <= 0.05 ~ TRUE,
-                        Effect_lfsr_Gulf_FloweringDate_MO > 0.05 ~ FALSE,
-                        TRUE ~ NA),
-    NE = case_when(Effect_lfsr_Gulf_FloweringDate_NE <= 0.05 ~ TRUE,
-                        Effect_lfsr_Gulf_FloweringDate_NE > 0.05 ~ FALSE,
-                        TRUE ~ NA),
-    MI = case_when(Effect_lfsr_Gulf_FloweringDate_MI <= 0.05 ~ TRUE,
-                        Effect_lfsr_Gulf_FloweringDate_MI > 0.05 ~ FALSE,
-                        TRUE ~ NA),
-    SD = case_when(Effect_lfsr_Gulf_FloweringDate_SD <= 0.05 ~ TRUE,
-                        Effect_lfsr_Gulf_FloweringDate_SD > 0.05 ~ FALSE,
-                        TRUE ~ NA),
+    TX1 = case_when(
+      Effect_lfsr_Gulf_FloweringDate_TX1 <= 0.05 ~ TRUE,
+      Effect_lfsr_Gulf_FloweringDate_TX1 > 0.05 ~ FALSE,
+      TRUE ~ NA
+    ),
+    TX2 = case_when(
+      Effect_lfsr_Gulf_FloweringDate_TX2 <= 0.05 ~ TRUE,
+      Effect_lfsr_Gulf_FloweringDate_TX2 > 0.05 ~ FALSE,
+      TRUE ~ NA
+    ),
+    TX3 = case_when(
+      Effect_lfsr_Gulf_FloweringDate_TX3 <= 0.05 ~ TRUE,
+      Effect_lfsr_Gulf_FloweringDate_TX3 > 0.05 ~ FALSE,
+      TRUE ~ NA
+    ),
+    OK = case_when(
+      Effect_lfsr_Gulf_FloweringDate_OK <= 0.05 ~ TRUE,
+      Effect_lfsr_Gulf_FloweringDate_OK > 0.05 ~ FALSE,
+      TRUE ~ NA
+    ),
+    MO = case_when(
+      Effect_lfsr_Gulf_FloweringDate_MO <= 0.05 ~ TRUE,
+      Effect_lfsr_Gulf_FloweringDate_MO > 0.05 ~ FALSE,
+      TRUE ~ NA
+    ),
+    NE = case_when(
+      Effect_lfsr_Gulf_FloweringDate_NE <= 0.05 ~ TRUE,
+      Effect_lfsr_Gulf_FloweringDate_NE > 0.05 ~ FALSE,
+      TRUE ~ NA
+    ),
+    MI = case_when(
+      Effect_lfsr_Gulf_FloweringDate_MI <= 0.05 ~ TRUE,
+      Effect_lfsr_Gulf_FloweringDate_MI > 0.05 ~ FALSE,
+      TRUE ~ NA
+    ),
+    SD = case_when(
+      Effect_lfsr_Gulf_FloweringDate_SD <= 0.05 ~ TRUE,
+      Effect_lfsr_Gulf_FloweringDate_SD > 0.05 ~ FALSE,
+      TRUE ~ NA
+    ),
     .before = 3
   )
 ```
@@ -121,8 +137,10 @@ p
 The plot above is definitely an improvement. However, by default, Locations are sorted by set size, so locations with the largest number of significant effects - SD and MO - are at the top. Thinking back to @fig-map, the locations actually fall along a latitudinal gradient, so it would make more sense to retain this order for the locations in this plot. I adjust this by setting `sort_sets=FALSE`:
 
 ```{r}
-p <- upset(effects, locations, name = "Locations", 
-           width_ratio = 0.1, min_size = 50, min_degree = 1, sort_sets = FALSE) +
+p <- upset(effects, locations,
+  name = "Locations",
+  width_ratio = 0.1, min_size = 50, min_degree = 1, sort_sets = FALSE
+) +
   ggtitle("Significant SNP Effects in Gulf plants for Flowering Date")
 
 p
