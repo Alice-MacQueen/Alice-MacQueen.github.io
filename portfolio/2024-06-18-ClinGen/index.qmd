@@ -28,19 +28,44 @@ Now, let's check these genes in IGV and in ClinGen. Here are a few interesting q
 
 3.  Is common genetic variation is present in the identified epitopes? (This may influence TCR reactivity.)
 
-I pulled up the PLD5 gene in the [web version of IGV](https://igv.org/app/) - the epitope appears to be at amino acids 179 to 187, so exon positions 537 to 561. To get a first overview of the variation within PLD5 and known disease implications, I zoomed in on PLD5 on chromosome 1, and pulled up the common SNPs and GWAS annotation tracks. There are two GWAS associations within PLD5:
+I pulled up the PLD5 gene in the [web version of IGV](https://igv.org/app/) - the epitope from the paper is at amino acids 179 to 187, so exon positions 537 to 561. To get a first overview of the variation within PLD5 and known disease implications, I searched for PLD5 in IGV, and pulled up the common SNPs and GWAS annotation tracks. There are five GWAS associations within PLD5:
 
-![Two GWAS associations within PLD5](Screenshot_IGV_1.png){width="800"}
+![GWAS associations within PLD5](GWAS_PLD5_cancer.png)
 
-One association is with coronary artery calcification among African Americans, and one is for a drug response to cytidine analogues. Neither seems particularly relevant to melanoma.
+There are a couple of associations for N-glycosylation of IgG; one association is with coronary artery calcification among African Americans, and one is for a drug response to cytidine analogues. None of these seem particularly relevant to melanoma.
 
-I zoomed in on the first exon of PLD5 to check if it had the epitope. The first exon is about 1500bp long, so it should contain the epitope. The gene starts at 242,241,743, so I was ideally looking for SNPs between 1,182 and 1,206:
+The fifth association is with squamous cell lung carcinoma - while not melanoma, this association with a familial disposition towards cancer could be of interest.
+
+I next searched ClinGen for these genes. However, none of them were in ClinGen's databases of curated clinically relevant disease variants.
+
+![PLD5 is not in ClinGen](Screenshot_ClinGen.png){width="800"}
+
+So next I decided to check gnomAD, particularly as by doing so I could also check ClinVar.
+
+I wanted to look at SNPs in the exon of PLD5 which had the epitope recognized by the self-reactive TCR. As the epitope is at amino acids 179 to 187, I looked for sites with impacts on these amino acids (aka, HGVS Consequence matching 179 - 187). I downloaded the full gnomAD variant dataset for this gene to make searching it slightly easier.
+
+[1-242524088-G-T](https://gnomad.broadinstitute.org/variant/1-242524088-G-T?dataset=gnomad_r4)
+
+| Assembly                                                                                 | Location                                        |
+|----------------------------------------------|--------------------------|
+| GRCh38.p14 ([GCF_000001405.40](https://www.ncbi.nlm.nih.gov/assembly/GCF_000001405.40/)) | NC_000001.11 (242082986..242530546, complement) |
+
+: PLD5 info from NCBI
 
 ```{r}
-242241743-561
-242241743-537
+library(tidyverse)
+library(knitr)
+pld5 <- read_csv("gnomAD_v4.1.0_ENSG00000180287_2024_06_19_07_30_12.csv")
 ```
 
-There were common SNPs nearby, but none within the epitope itself, which is just to the left of the dashed line below:
+```{r}
+pld5 |> 
+  arrange(desc(Position)) |> 
+  #filter(grepl(`HGVS Consequence`, "[1][78][0-9]")) #|> 
+  filter(between(Position, 242265383, 242265409)) |> 
+  kable()
+```
 
-![No Common SNPs in the epitope for PLD5](Screenshot_IGV_2.png){width="800"}
+So gnomAD has 11 SNPs in the epitope region of PLD5. None of them are particularly common (they all have allele frequencies of 1.860024e-06 or lower). Only one is in ClinVar as having Clinical Significance, but it is a missense variant of 'Uncertain signficiance'. All but three of these rare alleles appear predominantly in the non-Finnish European population, with two in South Asian, one in East Asian, and one in an African American population.
+
+The gnomAD and ClinVar data suggest that the epitope of PLD5 recognized by a self-reactive TCR is robustly present in humans without any common variation in this region. This suggests that if this TCR is present, it will likely be able to recognize this self-antigen, which improves its possible utility as a TCR targeting a tumor antigen.
