@@ -1,12 +1,12 @@
 ---
-title: "Using IGV and ClinGen to assess a putative autoimmune disease variant"
-description: "Use IGV and ClinGen to assess clinically relevant sequence variation near a self-reactive TCR target."
+title: "Using IGV and gnomAD to assess a putative autoimmune disease variant"
+description: "Use IGV, ClinGen, and gnomAD to assess clinically relevant sequence variation near a self-reactive TCR target."
 author:
   - name: Alice MacQueen
     url: https://alice-macqueen.github.io/
     orcid: 0000-0002-4606-1832
 date: 2024-06-18
-categories: [ClinGen, IGV] # self-defined categories
+categories: [ClinGen, IGV, gnomAD] # self-defined categories
 citation: 
   url: https://alice-macqueen.github.io/posts/2024-06-03-olga/
 image: 202007_clingen_diagram.png
@@ -18,17 +18,19 @@ There is a cool biotech [under development](https://www.tscan.com) to identify t
 
 ![Graphical Abstract for Kula *et al*., 2019 [@kula2019].](fx1_lrg.jpg){width="600"}
 
-This technology is exciting because it can be used to screen for self-reactive TCRs, which could be important for developing therapeutics for specific autoimmune diseases. For example, the authors identify 4 human proteins recognized by a self-reactive TCR specific for a HLA-A1-restricted epitope of the gene MAGE-A3 [@kula2019; @karanikas2003]: MAGE-A3, MAGE-A6, PLD5, and FAT2.
+This technology is exciting because it can be used to screen for self-reactive TCRs, which could be important for developing therapeutics for specific autoimmune diseases and for developing therapeutics for cancer. For example, the authors identify four human proteins recognized by a self-reactive TCR specific for a HLA-A1-restricted epitope of the gene MAGE-A3 [@kula2019; @karanikas2003]: MAGE-A3, MAGE-A6, PLD5, and FAT2.
 
-Now, let's check these genes in IGV and in ClinGen. Here are a few interesting questions to explore:
+Now, let's check one of these genes in IGV, ClinGen, and gnomAD. Here are a few interesting questions to explore:
 
-1.  What variation is present at these genes?
+1.  What sequence variation is present at these genes?
 
-2.  Is this variation is implicated in skin cancer, or any other disease?
+2.  Is this variation is implicated in skin cancer, or any other disease? (aka, is there additional evidence that this gene is involved in cancers or autoimmune conditions?)
 
-3.  Is common genetic variation is present in the identified epitopes? (This may influence TCR reactivity.)
+3.  Is common genetic variation present in the identified epitopes? (Variation can change TCR reactivity.)
 
-I pulled up the PLD5 gene in the [web version of IGV](https://igv.org/app/) - the epitope from the paper is at amino acids 179 to 187, so exon positions 537 to 561. To get a first overview of the variation within PLD5 and known disease implications, I searched for PLD5 in IGV, and pulled up the common SNPs and GWAS annotation tracks. There are five GWAS associations within PLD5:
+## IGV
+
+I pulled up the PLD5 gene in the [web version of IGV](https://igv.org/app/) - the epitope from the paper is at amino acids 179 to 187. To get a first overview of the variation within PLD5 and known disease implications, I searched for PLD5 in IGV, and pulled up the common SNPs and GWAS annotation tracks. There are five GWAS associations within PLD5:
 
 ![GWAS associations within PLD5](GWAS_PLD5_cancer.png)
 
@@ -36,15 +38,17 @@ There are a couple of associations for N-glycosylation of IgG; one association i
 
 The fifth association is with squamous cell lung carcinoma - while not melanoma, this association with a familial disposition towards cancer could be of interest.
 
+## ClinGen
+
 I next searched ClinGen for these genes. However, none of them were in ClinGen's databases of curated clinically relevant disease variants.
 
 ![PLD5 is not in ClinGen](Screenshot_ClinGen.png){width="800"}
 
 So next I decided to check gnomAD, particularly as by doing so I could also check ClinVar.
 
-I wanted to look at SNPs in the exon of PLD5 which had the epitope recognized by the self-reactive TCR. As the epitope is at amino acids 179 to 187, I looked for sites with impacts on these amino acids (aka, HGVS Consequence matching 179 - 187). I downloaded the full gnomAD variant dataset for this gene to make searching it slightly easier.
+## gnomAD
 
-[1-242524088-G-T](https://gnomad.broadinstitute.org/variant/1-242524088-G-T?dataset=gnomad_r4)
+I wanted to look at SNPs in the exon of PLD5 which had the epitope recognized by the self-reactive TCR. As the epitope is at amino acids 179 to 187, I looked for sites with impacts on these amino acids (aka, HGVS Consequence matching 179 - 187). I downloaded the full gnomAD variant dataset for this gene to make searching it slightly easier.
 
 | Assembly                                                                                 | Location                                        |
 |----------------------------------------------|--------------------------|
@@ -52,7 +56,7 @@ I wanted to look at SNPs in the exon of PLD5 which had the epitope recognized by
 
 : PLD5 info from NCBI
 
-```{r}
+```{r, message=FALSE, include=FALSE}
 library(tidyverse)
 library(knitr)
 pld5 <- read_csv("gnomAD_v4.1.0_ENSG00000180287_2024_06_19_07_30_12.csv")
@@ -61,11 +65,16 @@ pld5 <- read_csv("gnomAD_v4.1.0_ENSG00000180287_2024_06_19_07_30_12.csv")
 ```{r}
 pld5 |> 
   arrange(desc(Position)) |> 
-  #filter(grepl(`HGVS Consequence`, "[1][78][0-9]")) #|> 
+  # filter(grepl("[1][78][0-79]", `HGVS Consequence`)) # <1>
   filter(between(Position, 242265383, 242265409)) |> 
+  select(`gnomAD ID`, Chromosome, Position, Reference, Alternate, `HGVS Consequence`, `VEP Annotation`, `ClinVar Clinical Significance`, `Allele Frequency`, everything()) |> 
   kable()
 ```
 
+1.  Original search string to find amino acid changes from 179-187; it pulled up more than just amino acid changes, so I ultimately subset by Position.
+
 So gnomAD has 11 SNPs in the epitope region of PLD5. None of them are particularly common (they all have allele frequencies of 1.860024e-06 or lower). Only one is in ClinVar as having Clinical Significance, but it is a missense variant of 'Uncertain signficiance'. All but three of these rare alleles appear predominantly in the non-Finnish European population, with two in South Asian, one in East Asian, and one in an African American population.
+
+## Conclusions
 
 The gnomAD and ClinVar data suggest that the epitope of PLD5 recognized by a self-reactive TCR is robustly present in humans without any common variation in this region. This suggests that if this TCR is present, it will likely be able to recognize this self-antigen, which improves its possible utility as a TCR targeting a tumor antigen.

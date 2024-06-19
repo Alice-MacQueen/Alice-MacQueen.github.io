@@ -8,9 +8,9 @@
 
 <meta name="author" content="Alice MacQueen">
 <meta name="dcterms.date" content="2024-06-18">
-<meta name="description" content="Use IGV and ClinGen to assess clinically relevant sequence variation near a self-reactive TCR target.">
+<meta name="description" content="Use IGV, ClinGen, and gnomAD to assess clinically relevant sequence variation near a self-reactive TCR target.">
 
-<title>Alice MacQueen - Using IGV and ClinGen to assess a putative autoimmune disease variant</title>
+<title>Alice MacQueen - Using IGV and gnomAD to assess a putative autoimmune disease variant</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -167,22 +167,23 @@ div.csl-indent {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page">
-      <h1 class="title">Using IGV and ClinGen to assess a putative autoimmune disease variant</h1>
+    <div class="quarto-title column-page-left">
+      <h1 class="title">Using IGV and gnomAD to assess a putative autoimmune disease variant</h1>
                   <div>
         <div class="description">
-          Use IGV and ClinGen to assess clinically relevant sequence variation near a self-reactive TCR target.
+          Use IGV, ClinGen, and gnomAD to assess clinically relevant sequence variation near a self-reactive TCR target.
         </div>
       </div>
                           <div class="quarto-categories">
                 <div class="quarto-category">ClinGen</div>
                 <div class="quarto-category">IGV</div>
+                <div class="quarto-category">gnomAD</div>
               </div>
                   </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page">
+  <div class="quarto-title-meta column-page-left">
 
       <div>
       <div class="quarto-title-meta-heading">Author</div>
@@ -205,11 +206,20 @@ div.csl-indent {
   </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#igv" id="toc-igv" class="nav-link active" data-scroll-target="#igv">IGV</a></li>
+  <li><a href="#clingen" id="toc-clingen" class="nav-link" data-scroll-target="#clingen">ClinGen</a></li>
+  <li><a href="#gnomad" id="toc-gnomad" class="nav-link" data-scroll-target="#gnomad">gnomAD</a></li>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link" data-scroll-target="#conclusions">Conclusions</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content quarto-banner-title-block column-page" id="quarto-document-content">
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
 
 
 
@@ -222,14 +232,16 @@ div.csl-indent {
 <figcaption>Graphical Abstract for Kula <em>et al</em>., 2019 <span class="citation" data-cites="kula2019">(<a href="#ref-kula2019" role="doc-biblioref">Kula et al. 2019</a>)</span>.</figcaption>
 </figure>
 </div>
-<p>This technology is exciting because it can be used to screen for self-reactive TCRs, which could be important for developing therapeutics for specific autoimmune diseases. For example, the authors identify 4 human proteins recognized by a self-reactive TCR specific for a HLA-A1-restricted epitope of the gene MAGE-A3 <span class="citation" data-cites="kula2019 karanikas2003">(<a href="#ref-kula2019" role="doc-biblioref">Kula et al. 2019</a>; <a href="#ref-karanikas2003" role="doc-biblioref">Karanikas et al. 2003</a>)</span>: MAGE-A3, MAGE-A6, PLD5, and FAT2.</p>
-<p>Now, let’s check these genes in IGV and in ClinGen. Here are a few interesting questions to explore:</p>
+<p>This technology is exciting because it can be used to screen for self-reactive TCRs, which could be important for developing therapeutics for specific autoimmune diseases and for developing therapeutics for cancer. For example, the authors identify four human proteins recognized by a self-reactive TCR specific for a HLA-A1-restricted epitope of the gene MAGE-A3 <span class="citation" data-cites="kula2019 karanikas2003">(<a href="#ref-kula2019" role="doc-biblioref">Kula et al. 2019</a>; <a href="#ref-karanikas2003" role="doc-biblioref">Karanikas et al. 2003</a>)</span>: MAGE-A3, MAGE-A6, PLD5, and FAT2.</p>
+<p>Now, let’s check one of these genes in IGV, ClinGen, and gnomAD. Here are a few interesting questions to explore:</p>
 <ol type="1">
-<li><p>What variation is present at these genes?</p></li>
-<li><p>Is this variation is implicated in skin cancer, or any other disease?</p></li>
-<li><p>Is common genetic variation is present in the identified epitopes? (This may influence TCR reactivity.)</p></li>
+<li><p>What sequence variation is present at these genes?</p></li>
+<li><p>Is this variation is implicated in skin cancer, or any other disease? (aka, is there additional evidence that this gene is involved in cancers or autoimmune conditions?)</p></li>
+<li><p>Is common genetic variation present in the identified epitopes? (Variation can change TCR reactivity.)</p></li>
 </ol>
-<p>I pulled up the PLD5 gene in the <a href="https://igv.org/app/">web version of IGV</a> - the epitope from the paper is at amino acids 179 to 187, so exon positions 537 to 561. To get a first overview of the variation within PLD5 and known disease implications, I searched for PLD5 in IGV, and pulled up the common SNPs and GWAS annotation tracks. There are five GWAS associations within PLD5:</p>
+<section id="igv" class="level2">
+<h2 class="anchored" data-anchor-id="igv">IGV</h2>
+<p>I pulled up the PLD5 gene in the <a href="https://igv.org/app/">web version of IGV</a> - the epitope from the paper is at amino acids 179 to 187. To get a first overview of the variation within PLD5 and known disease implications, I searched for PLD5 in IGV, and pulled up the common SNPs and GWAS annotation tracks. There are five GWAS associations within PLD5:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="GWAS_PLD5_cancer.png" class="img-fluid figure-img"></p>
@@ -238,6 +250,9 @@ div.csl-indent {
 </div>
 <p>There are a couple of associations for N-glycosylation of IgG; one association is with coronary artery calcification among African Americans, and one is for a drug response to cytidine analogues. None of these seem particularly relevant to melanoma.</p>
 <p>The fifth association is with squamous cell lung carcinoma - while not melanoma, this association with a familial disposition towards cancer could be of interest.</p>
+</section>
+<section id="clingen" class="level2">
+<h2 class="anchored" data-anchor-id="clingen">ClinGen</h2>
 <p>I next searched ClinGen for these genes. However, none of them were in ClinGen’s databases of curated clinically relevant disease variants.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -246,8 +261,10 @@ div.csl-indent {
 </figure>
 </div>
 <p>So next I decided to check gnomAD, particularly as by doing so I could also check ClinVar.</p>
+</section>
+<section id="gnomad" class="level2">
+<h2 class="anchored" data-anchor-id="gnomad">gnomAD</h2>
 <p>I wanted to look at SNPs in the exon of PLD5 which had the epitope recognized by the self-reactive TCR. As the epitope is at amino acids 179 to 187, I looked for sites with impacts on these amino acids (aka, HGVS Consequence matching 179 - 187). I downloaded the full gnomAD variant dataset for this gene to make searching it slightly easier.</p>
-<p><a href="https://gnomad.broadinstitute.org/variant/1-242524088-G-T?dataset=gnomad_r4">1-242524088-G-T</a></p>
 <table class="table">
 <caption>PLD5 info from NCBI</caption>
 <thead>
@@ -264,38 +281,20 @@ div.csl-indent {
 </tbody>
 </table>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-✔ purrr     1.0.2     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a>pld5 <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-1-2"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Position)) <span class="sc">|&gt;</span> </span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter(grepl("[1][78][0-79]", `HGVS Consequence`))</span></span>
+<span id="annotated-cell-1-4"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">between</span>(Position, <span class="dv">242265383</span>, <span class="dv">242265409</span>)) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-1-5"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">gnomAD ID</span><span class="st">`</span>, Chromosome, Position, Reference, Alternate, <span class="st">`</span><span class="at">HGVS Consequence</span><span class="st">`</span>, <span class="st">`</span><span class="at">VEP Annotation</span><span class="st">`</span>, <span class="st">`</span><span class="at">ClinVar Clinical Significance</span><span class="st">`</span>, <span class="st">`</span><span class="at">Allele Frequency</span><span class="st">`</span>, <span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
+<span id="annotated-cell-1-6"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="1">Original search string to find amino acid changes from 179-187; it pulled up more than just amino acid changes, so I ultimately subset by Position.</span>
+</dd>
+</dl>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pld5 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"gnomAD_v4.1.0_ENSG00000180287_2024_06_19_07_30_12.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 1972 Columns: 72
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-chr (16): gnomAD ID, rsIDs, Reference, Alternate, Source, Filters - exomes, ...
-dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>pld5 <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Position)) <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#filter(grepl(`HGVS Consequence`, "[1][78][0-9]")) #|&gt; </span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">between</span>(Position, <span class="dv">242265383</span>, <span class="dv">242265409</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
@@ -306,16 +305,16 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <col style="width: 0%">
 <col style="width: 0%">
 <col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 0%">
+<col style="width: 0%">
+<col style="width: 1%">
 <col style="width: 0%">
 <col style="width: 1%">
 <col style="width: 1%">
-<col style="width: 0%">
 <col style="width: 1%">
 <col style="width: 1%">
 <col style="width: 1%">
-<col style="width: 1%">
-<col style="width: 1%">
-<col style="width: 0%">
 <col style="width: 0%">
 <col style="width: 0%">
 <col style="width: 0%">
@@ -377,23 +376,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <th style="text-align: left;">gnomAD ID</th>
 <th style="text-align: right;">Chromosome</th>
 <th style="text-align: right;">Position</th>
-<th style="text-align: left;">rsIDs</th>
 <th style="text-align: left;">Reference</th>
 <th style="text-align: left;">Alternate</th>
+<th style="text-align: left;">HGVS Consequence</th>
+<th style="text-align: left;">VEP Annotation</th>
+<th style="text-align: left;">ClinVar Clinical Significance</th>
+<th style="text-align: right;">Allele Frequency</th>
+<th style="text-align: left;">rsIDs</th>
 <th style="text-align: left;">Source</th>
 <th style="text-align: left;">Filters - exomes</th>
 <th style="text-align: left;">Filters - genomes</th>
 <th style="text-align: left;">Transcript</th>
-<th style="text-align: left;">HGVS Consequence</th>
 <th style="text-align: left;">Protein Consequence</th>
 <th style="text-align: left;">Transcript Consequence</th>
-<th style="text-align: left;">VEP Annotation</th>
-<th style="text-align: left;">ClinVar Clinical Significance</th>
 <th style="text-align: right;">ClinVar Variation ID</th>
 <th style="text-align: left;">Flags</th>
 <th style="text-align: right;">Allele Count</th>
 <th style="text-align: right;">Allele Number</th>
-<th style="text-align: right;">Allele Frequency</th>
 <th style="text-align: right;">Homozygote Count</th>
 <th style="text-align: right;">Hemizygote Count</th>
 <th style="text-align: left;">Filters - joint</th>
@@ -453,23 +452,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265407-T-C</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265407</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: left;">T</td>
 <td style="text-align: left;">C</td>
+<td style="text-align: left;">p.Gln179Gln</td>
+<td style="text-align: left;">synonymous_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">6.0e-07</td>
+<td style="text-align: left;">NA</td>
 <td style="text-align: left;">gnomAD Exomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Gln179Gln</td>
-<td style="text-align: left;">p.Gln179Gln</td>
 <td style="text-align: left;">c.537A&gt;G</td>
-<td style="text-align: left;">synonymous_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1612620</td>
-<td style="text-align: right;">6.0e-07</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -527,23 +526,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265405-T-G</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265405</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: left;">T</td>
 <td style="text-align: left;">G</td>
+<td style="text-align: left;">p.Asn180Thr</td>
+<td style="text-align: left;">missense_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">6.0e-07</td>
+<td style="text-align: left;">NA</td>
 <td style="text-align: left;">gnomAD Exomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Asn180Thr</td>
-<td style="text-align: left;">p.Asn180Thr</td>
 <td style="text-align: left;">c.539A&gt;C</td>
-<td style="text-align: left;">missense_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1612690</td>
-<td style="text-align: right;">6.0e-07</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -601,23 +600,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265404-A-G</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265404</td>
-<td style="text-align: left;">rs760794546</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">G</td>
+<td style="text-align: left;">p.Asn180Asn</td>
+<td style="text-align: left;">synonymous_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">1.2e-06</td>
+<td style="text-align: left;">rs760794546</td>
 <td style="text-align: left;">gnomAD Exomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Asn180Asn</td>
-<td style="text-align: left;">p.Asn180Asn</td>
 <td style="text-align: left;">c.540T&gt;C</td>
-<td style="text-align: left;">synonymous_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1612710</td>
-<td style="text-align: right;">1.2e-06</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -675,23 +674,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265402-A-G</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265402</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">G</td>
+<td style="text-align: left;">p.Ile181Thr</td>
+<td style="text-align: left;">missense_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">6.0e-07</td>
+<td style="text-align: left;">NA</td>
 <td style="text-align: left;">gnomAD Exomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Ile181Thr</td>
-<td style="text-align: left;">p.Ile181Thr</td>
 <td style="text-align: left;">c.542T&gt;C</td>
-<td style="text-align: left;">missense_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1612808</td>
-<td style="text-align: right;">6.0e-07</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -749,23 +748,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265401-A-G</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265401</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">G</td>
+<td style="text-align: left;">p.Ile181Ile</td>
+<td style="text-align: left;">synonymous_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">6.0e-07</td>
+<td style="text-align: left;">NA</td>
 <td style="text-align: left;">gnomAD Exomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Ile181Ile</td>
-<td style="text-align: left;">p.Ile181Ile</td>
 <td style="text-align: left;">c.543T&gt;C</td>
-<td style="text-align: left;">synonymous_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1612790</td>
-<td style="text-align: right;">6.0e-07</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -823,23 +822,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265400-C-T</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265400</td>
-<td style="text-align: left;">rs1244994670</td>
 <td style="text-align: left;">C</td>
 <td style="text-align: left;">T</td>
+<td style="text-align: left;">p.Glu182Lys</td>
+<td style="text-align: left;">missense_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">1.2e-06</td>
+<td style="text-align: left;">rs1244994670</td>
 <td style="text-align: left;">gnomAD Exomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Glu182Lys</td>
-<td style="text-align: left;">p.Glu182Lys</td>
 <td style="text-align: left;">c.544G&gt;A</td>
-<td style="text-align: left;">missense_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1612500</td>
-<td style="text-align: right;">1.2e-06</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -897,23 +896,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265392-C-T</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265392</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: left;">C</td>
 <td style="text-align: left;">T</td>
+<td style="text-align: left;">p.Lys184Lys</td>
+<td style="text-align: left;">synonymous_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">6.0e-07</td>
+<td style="text-align: left;">NA</td>
 <td style="text-align: left;">gnomAD Exomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Lys184Lys</td>
-<td style="text-align: left;">p.Lys184Lys</td>
 <td style="text-align: left;">c.552G&gt;A</td>
-<td style="text-align: left;">synonymous_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1612778</td>
-<td style="text-align: right;">6.0e-07</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -971,23 +970,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265389-T-C</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265389</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: left;">T</td>
 <td style="text-align: left;">C</td>
+<td style="text-align: left;">p.Leu185Leu</td>
+<td style="text-align: left;">synonymous_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">6.0e-07</td>
+<td style="text-align: left;">NA</td>
 <td style="text-align: left;">gnomAD Exomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Leu185Leu</td>
-<td style="text-align: left;">p.Leu185Leu</td>
 <td style="text-align: left;">c.555A&gt;G</td>
-<td style="text-align: left;">synonymous_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1612956</td>
-<td style="text-align: right;">6.0e-07</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -1045,23 +1044,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265387-A-G</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265387</td>
-<td style="text-align: left;">rs775543164</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">G</td>
+<td style="text-align: left;">p.Val186Ala</td>
+<td style="text-align: left;">missense_variant</td>
+<td style="text-align: left;">Uncertain significance</td>
+<td style="text-align: right;">1.9e-06</td>
+<td style="text-align: left;">rs775543164</td>
 <td style="text-align: left;">gnomAD Exomes,gnomAD Genomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Val186Ala</td>
-<td style="text-align: left;">p.Val186Ala</td>
 <td style="text-align: left;">c.557T&gt;C</td>
-<td style="text-align: left;">missense_variant</td>
-<td style="text-align: left;">Uncertain significance</td>
 <td style="text-align: right;">3214673</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1612882</td>
-<td style="text-align: right;">1.9e-06</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -1119,23 +1118,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265386-C-T</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265386</td>
-<td style="text-align: left;">rs1364495756</td>
 <td style="text-align: left;">C</td>
 <td style="text-align: left;">T</td>
+<td style="text-align: left;">p.Val186Val</td>
+<td style="text-align: left;">synonymous_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">6.0e-07</td>
+<td style="text-align: left;">rs1364495756</td>
 <td style="text-align: left;">gnomAD Genomes</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Val186Val</td>
-<td style="text-align: left;">p.Val186Val</td>
 <td style="text-align: left;">c.558G&gt;A</td>
-<td style="text-align: left;">synonymous_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1612794</td>
-<td style="text-align: right;">6.0e-07</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -1193,23 +1192,23 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 <td style="text-align: left;">1-242265383-A-T</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">242265383</td>
-<td style="text-align: left;">rs772623416</td>
 <td style="text-align: left;">A</td>
 <td style="text-align: left;">T</td>
+<td style="text-align: left;">p.Ser187Arg</td>
+<td style="text-align: left;">missense_variant</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">1.9e-06</td>
+<td style="text-align: left;">rs772623416</td>
 <td style="text-align: left;">gnomAD Exomes</td>
 <td style="text-align: left;">PASS</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">ENST00000536534.7</td>
 <td style="text-align: left;">p.Ser187Arg</td>
-<td style="text-align: left;">p.Ser187Arg</td>
 <td style="text-align: left;">c.561T&gt;A</td>
-<td style="text-align: left;">missense_variant</td>
-<td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1612900</td>
-<td style="text-align: right;">1.9e-06</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: left;">PASS</td>
@@ -1268,10 +1267,14 @@ dbl (56): Chromosome, Position, ClinVar Variation ID, Allele Count, Allele N...
 </div>
 </div>
 <p>So gnomAD has 11 SNPs in the epitope region of PLD5. None of them are particularly common (they all have allele frequencies of 1.860024e-06 or lower). Only one is in ClinVar as having Clinical Significance, but it is a missense variant of ‘Uncertain signficiance’. All but three of these rare alleles appear predominantly in the non-Finnish European population, with two in South Asian, one in East Asian, and one in an African American population.</p>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
 <p>The gnomAD and ClinVar data suggest that the epitope of PLD5 recognized by a self-reactive TCR is robustly present in humans without any common variation in this region. This suggests that if this TCR is present, it will likely be able to recognize this self-antigen, which improves its possible utility as a TCR targeting a tumor antigen.</p>
 
 
 
+</section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-karanikas2003" class="csl-entry" role="listitem">
@@ -1282,14 +1285,14 @@ Kula, Tomasz, Mohammad H. Dezfulian, Charlotte I. Wang, Nouran S. Abdelfattah, Z
 </div>
 </div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{macqueen2024,
   author = {MacQueen, Alice},
-  title = {Using {IGV} and {ClinGen} to Assess a Putative Autoimmune
+  title = {Using {IGV} and {gnomAD} to Assess a Putative Autoimmune
     Disease Variant},
   date = {2024-06-18},
   url = {https://alice-macqueen.github.io/posts/2024-06-03-olga/},
   langid = {en}
 }
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-macqueen2024" class="csl-entry quarto-appendix-citeas" role="listitem">
-MacQueen, Alice. 2024. <span>“Using IGV and ClinGen to Assess a Putative
+MacQueen, Alice. 2024. <span>“Using IGV and gnomAD to Assess a Putative
 Autoimmune Disease Variant.”</span> June 18, 2024. <a href="https://alice-macqueen.github.io/posts/2024-06-03-olga/">https://alice-macqueen.github.io/posts/2024-06-03-olga/</a>.
 </div></div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
