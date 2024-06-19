@@ -1,0 +1,46 @@
+---
+title: "Using IGV and ClinGen to assess a putative autoimmune disease variant"
+description: "Use IGV and ClinGen to assess clinically relevant sequence variation near a self-reactive TCR target."
+author:
+  - name: Alice MacQueen
+    url: https://alice-macqueen.github.io/
+    orcid: 0000-0002-4606-1832
+date: 2024-06-18
+categories: [ClinGen, IGV] # self-defined categories
+citation: 
+  url: https://alice-macqueen.github.io/posts/2024-06-03-olga/
+image: 202007_clingen_diagram.png
+draft: false # setting this to `true` will prevent your post from appearing on your listing page until you're ready!
+bibliography: references.bib
+---
+
+There is a cool biotech [under development](https://www.tscan.com) to identify the antigens for specific T cell receptors, by exposing the T cell to a library of (thousands to hundreds of thousands) cells expressing a wide variety of antigens. If the T cell recognizes an antigen, a specific reporter fluorescence molecule will be activated, and the library can be sorted for reporter activation and the sequence of the antigen determined using next generation sequencing (NGS) [@kula2019].
+
+![Graphical Abstract for Kula *et al*., 2019 [@kula2019].](fx1_lrg.jpg){width="600"}
+
+This technology is exciting because it can be used to screen for self-reactive TCRs, which could be important for developing therapeutics for specific autoimmune diseases. For example, the authors identify 4 human proteins recognized by a self-reactive TCR specific for a HLA-A1-restricted epitope of the gene MAGE-A3 [@kula2019; @karanikas2003]: MAGE-A3, MAGE-A6, PLD5, and FAT2.
+
+Now, let's check these genes in IGV and in ClinGen. Here are a few interesting questions to explore:
+
+1.  What variation is present at these genes?
+
+2.  Is this variation is implicated in skin cancer, or any other disease?
+
+3.  Is common genetic variation is present in the identified epitopes? (This may influence TCR reactivity.)
+
+I pulled up the PLD5 gene in the [web version of IGV](https://igv.org/app/) - the epitope appears to be at amino acids 179 to 187, so exon positions 537 to 561. To get a first overview of the variation within PLD5 and known disease implications, I zoomed in on PLD5 on chromosome 1, and pulled up the common SNPs and GWAS annotation tracks. There are two GWAS associations within PLD5:
+
+![Two GWAS associations within PLD5](Screenshot_IGV_1.png){width="800"}
+
+One association is with coronary artery calcification among African Americans, and one is for a drug response to cytidine analogues. Neither seems particularly relevant to melanoma.
+
+I zoomed in on the first exon of PLD5 to check if it had the epitope. The first exon is about 1500bp long, so it should contain the epitope. The gene starts at 242,241,743, so I was ideally looking for SNPs between 1,182 and 1,206:
+
+```{r}
+242241743-561
+242241743-537
+```
+
+There were common SNPs nearby, but none within the epitope itself, which is just to the left of the dashed line below:
+
+![No Common SNPs in the epitope for PLD5](Screenshot_IGV_2.png){width="800"}
